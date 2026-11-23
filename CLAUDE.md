@@ -227,10 +227,12 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
 
 1. ✅ Paso 1: diseño nuevo (modelos, clientes, preventa, personalización, entrega, tallas,
    costo guardado en el pedido, gastos Mercadería/Operativo, ganancia sin IVA).
-2. Paso 2: pantalla de **lotes** con la fórmula de costo de Geomil; al recibir un lote,
-   pasar sus camisetas al inventario con su costo real.
-3. Paso 3: panel completo: mes seleccionable, gráfico de ventas y ganancia, stock por modelo
-   y talla, lotes en camino.
+2. ✅ Paso 2: **lotes** (migración `20261127000000_lotes.sql`): tabla `lote_items`, cálculo de costo
+   en `lib/costos.ts` (descuento, recargo 2XL/3XL/Niño, envío a Miami por método, Geomil por libra
+   redondeada + IVA + $21; Geomil se reparte por peso; valores reales reemplazan al cálculo).
+   "Recibir en Quito" = función `recibir_lote()`: pasa todo al inventario con su costo y asigna
+   las preventas elegidas (que toman el costo real). Panel muestra lotes en camino.
+3. Paso 3: panel completo: mes seleccionable, gráfico de ventas y ganancia, stock por modelo y talla.
 4. Paso 4: recordatorio de declaraciones del SRI y comprobantes.
 5. Después: catálogo público con "Pedir por WhatsApp" e importar la hoja de cálculo.
 
@@ -246,6 +248,8 @@ app/(app)/pedidos/         Lista, nuevo, editar ([id]) y acciones del servidor
 app/(app)/gastos/          Igual que pedidos
 app/(app)/inventario/      Igual, más botones rápidos − / + en la lista
 app/(app)/modelos/         Editar costo estimado, precio sugerido, precio proveedor y peso
+app/(app)/lotes/           Lista, nuevo, ver/editar + "Recibir en Quito"
+lib/costos.ts              Fórmula de costo por camiseta de un lote (Geomil, envío, descuento)
 components/campos.tsx      Campos de formulario grandes para celular (Formulario, Opciones, Contador…)
 components/estructura.tsx  Encabezado, botón flotante "+", tarjetas
 lib/datos.ts               Listas fijas (tallas, estados, categorías) y tipos

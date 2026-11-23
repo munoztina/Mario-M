@@ -1,5 +1,5 @@
 import { crearClienteSupabase } from "@/lib/supabase/server";
-import { CUPO_4X4_ANUAL, STOCK_ALERTA_MENOS_DE, TALLAS, type ItemInventario, type Pedido } from "@/lib/datos";
+import { CUPO_4X4_ANUAL, STOCK_ALERTA_MENOS_DE, TALLAS, type ItemInventario, type Lote, type Pedido } from "@/lib/datos";
 import { hoyEcuador } from "@/lib/formato";
 
 export type Mes = { clave: string; ventas: number; ganancia: number; unidades: number; operativos: number };
@@ -23,7 +23,7 @@ export async function cargarPanel() {
   const anio = hoy.slice(0, 4);
 
   const supabase = await crearClienteSupabase();
-  const [ventas, pendientes, cobrar, inventario, operativos, comprasAnio, costos] = await Promise.all([
+  const [ventas, pendientes, cobrar, inventario, operativos, comprasAnio, costos, lotes] = await Promise.all([
     supabase.from("pedidos_detalle").select("*").gte("fecha", desde12).neq("estado", "Cancelado"),
     supabase.from("pedidos_detalle").select("*").neq("estado", "Cancelado").neq("estado", "Entregado").order("fecha"),
     supabase.from("pedidos").select("saldo").neq("estado", "Cancelado").gt("saldo", 0),
@@ -31,8 +31,9 @@ export async function cargarPanel() {
     supabase.from("gastos").select("fecha, monto").eq("tipo", "Operativo").gte("fecha", desde12),
     supabase.from("gastos").select("monto").eq("categoria", "Compra a proveedor").gte("fecha", `${anio}-01-01`).lt("fecha", `${Number(anio) + 1}-01-01`),
     supabase.from("modelos").select("precio_proveedor"),
+    supabase.from("lotes_resumen").select("*").neq("estado", "Recibido").order("fecha_pedido"),
   ]);
-  const error = [ventas, pendientes, cobrar, inventario, operativos, comprasAnio, costos].find((r) => r.error)?.error;
+  const error = [ventas, pendientes, cobrar, inventario, operativos, comprasAnio, costos, lotes].find((r) => r.error)?.error;
   const pedidos = (ventas.data ?? []) as Pedido[];
 
   // --- Por mes (últimos 12) ---
@@ -96,6 +97,7 @@ export async function cargarPanel() {
     clientesPorCobrar: conSaldo.length,
     porEntregar: (pendientes.data ?? []) as Pedido[],
     porTalla,
+    lotesEnCamino: (lotes.data ?? []) as Lote[],
     pocas,
     agotadas: items.filter((i) => i.cantidad === 0).length,
     totalStock: suma(items, (i) => i.cantidad),

@@ -7,6 +7,7 @@ const SECCIONES = [
   { href: "/", texto: "Panel", icono: "📊" },
   { href: "/pedidos", texto: "Pedidos", icono: "🧾" },
   { href: "/inventario", texto: "Inventario", icono: "👕" },
+  { href: "/lotes", texto: "Lotes", icono: "📦" },
   { href: "/gastos", texto: "Gastos", icono: "💸" },
 ];
 
@@ -14,7 +15,7 @@ export function MenuInferior() {
   const ruta = usePathname();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-zinc-200 bg-white pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto grid max-w-lg grid-cols-4">
+      <ul className="mx-auto grid max-w-lg grid-cols-5">
         {SECCIONES.map((s) => {
           const activo = s.href === "/" ? ruta === "/" : ruta.startsWith(s.href) || (s.href === "/inventario" && ruta.startsWith("/modelos"));
           return (

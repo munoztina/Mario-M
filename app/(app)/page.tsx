@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Encabezado } from "@/components/estructura";
-import { BarrasHorizontales, Cifra, Columnas, Medidor, Seccion } from "@/components/panel";
+import { BarrasHorizontales, Cifra, Columnas, Medidor, PasosLote, Seccion } from "@/components/panel";
 import { GraficoVentasMes } from "@/components/graficos";
 import { cargarPanel } from "@/lib/panel";
 import { STOCK_ALERTA_MENOS_DE } from "@/lib/datos";
@@ -93,6 +93,31 @@ export default async function Panel() {
             {d.cupo.camisetasAprox !== null && <> (≈ {d.cupo.camisetasAprox} camisetas al precio promedio del proveedor)</>}.
           </p>
           <p className="mt-1 text-xs text-zinc-500">Suma de tus gastos «Compra a proveedor» de este año (valor FOB). El cupo se reinicia el 1 de enero. Máximo por paquete: 8 lb y $400.</p>
+        </Seccion>
+
+        <Seccion titulo="Lotes en camino" enlace={{ href: "/lotes", texto: "Ver lotes" }}>
+          {d.lotesEnCamino.length === 0 ? (
+            <p className="text-sm text-zinc-500">No tienes lotes en camino.</p>
+          ) : (
+            <ul className="space-y-4">
+              {d.lotesEnCamino.map((l) => {
+                const dias = diasDesde(l.fecha_pedido, hoy);
+                return (
+                  <li key={l.id}>
+                    <Link href={`/lotes/${l.id}`} className="block active:bg-zinc-50">
+                      <span className="mb-1.5 flex justify-between gap-2 text-sm">
+                        <span className="font-medium">
+                          {l.proveedor} · {l.unidades} camisetas
+                        </span>
+                        <span className="text-zinc-500">{dias === 0 ? "pedido hoy" : `hace ${dias} ${dias === 1 ? "día" : "días"}`}</span>
+                      </span>
+                      <PasosLote estado={l.estado} />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </Seccion>
 
         <Seccion titulo="Por entregar" enlace={{ href: "/pedidos", texto: "Ver pedidos" }}>

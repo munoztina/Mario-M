@@ -106,3 +106,26 @@ export function Medidor({ porcentaje }: { porcentaje: number }) {
     </div>
   );
 }
+
+const PASOS = ["Pedido", "En Miami", "En Quito", "Recibido"];
+
+/** Barra de 4 pasos del recorrido del lote: Pedido → En Miami → En Quito → Recibido. */
+export function PasosLote({ estado }: { estado: string }) {
+  const actual = PASOS.indexOf(estado);
+  return (
+    <div aria-label={`Estado: ${estado}`}>
+      <div className="flex gap-[2px]">
+        {PASOS.map((p, i) => (
+          <span key={p} className={"h-1.5 flex-1 rounded-full " + (i <= actual ? "bg-emerald-600" : "bg-zinc-200")} />
+        ))}
+      </div>
+      <div className="mt-1 flex text-[11px]">
+        {PASOS.map((p, i) => (
+          <span key={p} className={"flex-1 " + (i === actual ? "font-semibold text-zinc-900" : "text-zinc-400")}>
+            {p}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}

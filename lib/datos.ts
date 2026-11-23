@@ -100,3 +100,40 @@ export type ItemInventario = {
 };
 
 export type EstadoFormulario = { error?: string } | undefined;
+
+// ---------------- Lotes e importación ----------------
+
+export const PROVEEDORES = ["SoccerPlus", "GMKits"] as const;
+export const METODOS_ENVIO = ["USPS", "UPS/FedEx", "SZ-FedEx"] as const;
+/** Estados que se eligen a mano; "Recibido" se pone con el botón "Recibir en Quito". */
+export const ESTADOS_LOTE = ["Pedido", "En Miami", "En Quito"] as const;
+
+export type Lote = {
+  id: string;
+  fecha_pedido: string;
+  fecha_llegada: string | null;
+  proveedor: string;
+  metodo_envio: string;
+  descuento: number;
+  costo_proveedor: number;
+  costo_envio_miami: number;
+  peso_lb: number | null;
+  costo_geomil: number | null;
+  entrega_domicilio: boolean;
+  guia: string | null;
+  estado: string;
+  notas: string | null;
+  unidades?: number;
+};
+
+export type LoteItem = {
+  id?: string;
+  modelo_id: string;
+  equipo: string;
+  talla: string;
+  cantidad: number;
+  precio_unitario: number;
+  extras: number;
+  costo_unitario?: number;
+  inventario_id?: string | null;
+};
