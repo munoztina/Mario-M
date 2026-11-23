@@ -1,7 +1,55 @@
 @import "tailwindcss";
 
+/*
+ * Estilo FutAddicts: fondo negro azulado del logo, líneas y botones blancos.
+ * En vez de cambiar cada pantalla, se redefine la paleta que usa toda la app:
+ *  - "white"  = superficie de tarjetas y campos (y el texto de los botones claros)
+ *  - "zinc"   = escala de grises invertida (900 = texto principal claro)
+ *  - "emerald"= color de acción de la marca: blanco
+ *  - amber / red / sky = avisos (stock, cupo, errores), adaptados al fondo oscuro
+ */
+@theme {
+  --font-marca: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+
+  --color-white: #1b2129;
+
+  --color-zinc-50: #161b22;
+  --color-zinc-100: #222932;
+  --color-zinc-200: #2c343e;
+  --color-zinc-300: #3a434e;
+  --color-zinc-400: #737b87;
+  --color-zinc-500: #949ba6;
+  --color-zinc-600: #aeb4bd;
+  --color-zinc-700: #c8ccd3;
+  --color-zinc-800: #e0e3e7;
+  --color-zinc-900: #f5f6f7;
+
+  --color-emerald-50: #222932;
+  --color-emerald-100: #2c343e;
+  --color-emerald-200: #3a434e;
+  --color-emerald-300: #4b545f;
+  --color-emerald-400: #5d6671;
+  --color-emerald-600: #f5f6f7;
+  --color-emerald-700: #d9dde2;
+  --color-emerald-800: #f5f6f7;
+
+  --color-amber-50: #2a2310;
+  --color-amber-100: #3b3012;
+  --color-amber-300: #7a5f1c;
+  --color-amber-700: #f7bf4f;
+  --color-amber-800: #f9cd6a;
+
+  --color-red-50: #2c1417;
+  --color-red-200: #5e252b;
+  --color-red-600: #ff8080;
+  --color-red-700: #ff9494;
+
+  --color-sky-100: #10283a;
+  --color-sky-800: #92d2ff;
+}
+
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html {
@@ -9,11 +57,15 @@ html {
 }
 
 body {
-  background: #f4f4f5;
-  color: #18181b;
+  background: #14191f;
+  color: #f5f6f7;
 }
 
 /* Inputs de 16px mínimo para que el iPhone no haga zoom al tocar. */
 input, select, textarea {
   font-size: 16px;
+}
+
+::placeholder {
+  color: #737b87;
 }

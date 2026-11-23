@@ -98,7 +98,7 @@ export function Medidor({ porcentaje }: { porcentaje: number }) {
         <div className="h-full rounded-full" style={{ width: `${Math.min(porcentaje, 100)}%`, background: nivel.color }} />
       </div>
       <p className="mt-2 flex items-center gap-1.5 text-sm font-medium text-zinc-700">
-        <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs text-white" style={{ background: nivel.color }}>
+        <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs text-black" style={{ background: nivel.color }}>
           {nivel.icono}
         </span>
         {nivel.texto}

@@ -170,7 +170,7 @@ export default async function Panel() {
           {d.pocas.length > 0 && (
             <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-3">
               <p className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-zinc-900">
-                <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fab219] text-xs text-zinc-900">⚠</span>
+                <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fab219] text-xs text-black">⚠</span>
                 Quedan pocas (menos de {STOCK_ALERTA_MENOS_DE})
               </p>
               <ul className="space-y-1 text-sm text-zinc-700">
@@ -188,7 +188,7 @@ export default async function Panel() {
           )}
           {d.agotadas > 0 && (
             <Link href="/inventario?ver=todo" className="mt-3 flex items-center gap-1.5 text-sm text-zinc-700">
-              <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#d03b3b] text-xs text-white">!</span>
+              <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#d03b3b] text-xs text-black">!</span>
               {d.agotadas} {d.agotadas === 1 ? "camiseta agotada" : "camisetas agotadas"} ›
             </Link>
           )}

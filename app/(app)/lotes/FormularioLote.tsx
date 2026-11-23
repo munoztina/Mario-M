@@ -220,7 +220,7 @@ export function FormularioLote({ lote, items, modelos, equipos, cupoRestante, ho
           <ul className="mt-3 space-y-1.5">
             {avisos.map((a) => (
               <li key={a} className="flex gap-2 rounded-lg bg-amber-50 px-2 py-1.5 text-zinc-800 ring-1 ring-amber-300">
-                <span aria-hidden className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#fab219] text-xs">⚠</span>
+                <span aria-hidden className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#fab219] text-xs text-black">⚠</span>
                 {a}
               </li>
             ))}

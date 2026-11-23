@@ -2,22 +2,28 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Panel Camisetas",
-  description: "Pedidos, gastos e inventario",
-  icons: { icon: "/icon.svg", apple: "/apple-touch-icon.png" },
-  appleWebApp: { capable: true, title: "Camisetas", statusBarStyle: "default" },
+  title: "FutAddicts",
+  description: "Panel de FutAddicts: pedidos, lotes, inventario y gastos",
+  icons: { icon: "/favicon.png", apple: "/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: "FutAddicts", statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#059669",
+  themeColor: "#14191f",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
+      <head>
+        {/* Letra cuadrada parecida a la del logo, solo para títulos */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+      </head>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

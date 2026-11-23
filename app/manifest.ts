@@ -3,13 +3,13 @@ import type { MetadataRoute } from "next";
 // Permite "Agregar a la pantalla de inicio" y abrir la app a pantalla completa.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Panel Camisetas",
-    short_name: "Camisetas",
+    name: "FutAddicts",
+    short_name: "FutAddicts",
     description: "Pedidos, gastos e inventario",
     start_url: "/",
     display: "standalone",
-    background_color: "#f4f4f5",
-    theme_color: "#059669",
+    background_color: "#14191f",
+    theme_color: "#14191f",
     lang: "es-EC",
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png" },

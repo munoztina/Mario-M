@@ -9,9 +9,9 @@ export default function Login() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
       <div className="mb-8 text-center">
-        <img src="/icon.svg" alt="" className="mx-auto mb-3 h-16 w-16" />
-        <h1 className="text-2xl font-bold">Panel Camisetas</h1>
-        <p className="text-zinc-500">Inicia sesión para continuar</p>
+        <img src="/logo-futaddicts.png" alt="FutAddicts" className="mx-auto mb-4 h-36 w-36" />
+        <h1 className="font-marca text-2xl font-bold tracking-[0.2em]">FUTADDICTS</h1>
+        <p className="mt-1 text-zinc-500">Panel del negocio · Inicia sesión</p>
       </div>
       <Formulario accion={accion} pendiente={pendiente} className="space-y-4">
         <Campo etiqueta="Correo">

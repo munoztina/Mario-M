@@ -192,6 +192,16 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
 - Lotes en camino y su estado.
 - Recordatorio de declaraciones del SRI.
 
+## Marca: FutAddicts
+
+- Instagram: @futaddicts · "Camisetas de fútbol Ecuador" · WhatsApp +593 99 993 1261.
+- Estilo: **monocromático oscuro**. Fondo negro azulado del logo `#14191F`, líneas y botones blancos,
+  letra cuadrada **Orbitron** solo en títulos. Logo: camiseta en líneas blancas dentro de un marco
+  cuadrado con "FUTADDICTS" vertical (`public/logo-futaddicts.png`, reconstruido de una captura).
+- Los colores se definen en un solo lugar: `@theme` de `app/globals.css` (la paleta zinc está
+  invertida, `white` = superficie de tarjeta, `emerald` = acción blanca). Verde/amarillo/rojo
+  se reservan para avisos (cupo, stock, errores).
+
 ## Tecnología
 
 - Next.js + Supabase (base de datos y login) + Vercel (publicación gratuita).
