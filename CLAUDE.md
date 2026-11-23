@@ -1,85 +1,233 @@
-# CLAUDE.md: Panel de Camisetas
+# Panel de camisetas — contexto del negocio
 
-Este archivo da contexto a Claude (y a cualquier desarrollador) sobre el negocio y el proyecto.
-Léelo antes de hacer cambios.
+Este archivo le da a Claude Code todo el contexto del negocio. Léelo antes de cada tarea.
+(Las secciones de negocio las escribió Mario; las "Notas técnicas" del final describen el código actual.)
 
-## Sobre el dueño
+## Sobre mí y cómo trabajar conmigo
 
-- Se llama Mario. Estudia odontología y lleva este negocio en paralelo.
-- **No es programador.** Explícale todo en español, en pasos simples, sin jerga.
-  Si un término técnico es inevitable, defínelo en una frase.
+- Soy Mario, estudiante de odontología en Quito, Ecuador. **No soy programador.**
+- Explícame cada paso en español y con palabras simples.
+- Avanza en pasos pequeños. Antes de seguir, dime cómo probar lo que hiciste.
+- Guarda los cambios en GitHub (commit) al terminar cada paso.
 - Antes de cambios grandes (borrar datos, cambiar la base de datos, publicar), explica qué vas a hacer y pide confirmación.
+- Moneda: dólares (USD). Zona horaria: America/Guayaquil. Fechas en formato dd/mm/aaaa.
+- La app tiene que verse y usarse bien en el celular.
 
 ## El negocio
 
-Venta de camisetas de fútbol en **Ecuador** (base en **Quito**). Moneda: **dólares (USD)**, que es la moneda oficial de Ecuador.
+Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retro) por Instagram (~1.200 seguidores) y WhatsApp, en Quito y con envíos al resto de Ecuador.
 
-### Productos (categorías)
+- Las camisetas se venden siempre como "versión fan", "versión jugador" o "retro". **Nunca como originales.**
+- Modelo de venta: **preventa** (el cliente paga un anticipo del 50% y recibe en unas 3 semanas) y **stock** de los modelos que más se venden.
+- Entregas: en mano en Quito y la USFQ, y por Servientrega al resto del país.
+- Cambios: solo de talla, hasta 3 días después de entregar y sin uso. Las camisetas personalizadas con nombre no tienen cambio.
 
-| Categoría | Variante | Notas |
-|---|---|---|
-| Fan | Manga corta | Versión aficionado, la más vendida |
-| Fan | Manga larga | |
-| Jugador | Adidas | Versión "player", tela y corte de jugador |
-| Jugador | Nike / Puma | Se agrupan juntas |
-| Retro | — | Camisetas de temporadas pasadas |
+## Proveedor principal: SoccerPlus (China)
 
-Cada camiseta además tiene: **equipo/selección**, **temporada** (ej. 2025/26), **local/visitante/alterna**, **talla** (S, M, L, XL, XXL…) y opcionalmente **personalización** (nombre y número, parches).
+- Catálogo: https://soccerplus.x.yupoo.com/ · contacto por Telegram · pago por PayPal.
 
-### Cadena de suministro
+| Modelo | Precio proveedor (USD) |
+| --- | --- |
+| Fan manga corta (también mujer) | 12 |
+| Fan manga larga / Niños | 14 |
+| Jugador Adidas | 15 |
+| Jugador Nike / Puma / Jordan / NB | 17 |
+| Retro | 16 (+3 con nombre y número) |
+
+- Tallas grandes: XXL +$1 · 3XL–4XL +$2.
+- Extras: nombre y número estrella $2 · personalizado $3 · parches $1 c/u.
+- Descuento: 2–5% desde 5 unidades.
+- Envío China → Miami:
+  - USPS (15–20 días): gratis desde 6 unidades.
+  - UPS / FedEx (7–13 días): $2 por unidad, mínimo 10.
+  - SZ-FedEx (5–8 días): $3 por unidad, mínimo 10.
+- Preparación del pedido: 2–6 días.
+
+Proveedor alternativo: **GMKits** (https://www.gmkitse.com/). Fan desde $14,50, con descuento por volumen de 5% (5–9), 7% (10–15), 10% (16+) y 15% (50+).
+
+## Logística: China → Miami → Quito
+
+1. SoccerPlus envía a mi casillero **GeoBox** de Geomil en Miami.
+2. **Geomil** (https://geomil-group.com/) lo trae a Quito.
+   - Flete: **$4,99 por libra + IVA 15%** (mínimo 1 lb, se redondea a la libra siguiente).
+   - Arancel **$20 por paquete** + **FODINFA $1**.
+   - Entrega a domicilio $3,85 (opcional, o retiro en oficina).
+   - Límite por paquete (régimen courier 4x4): **8 lb y $400 de valor**.
+3. **Cupo 4x4:** $1.600 al año en valor de compra (FOB). Pasado ese cupo, la importación tiene que ser formal (servicio de carga para emprendedores de Geomil).
+4. Tiempo total con envío rápido: unas 2–3 semanas.
+
+Lo óptimo son 12 camisetas por paquete (~7–8 lb) para repartir el arancel de $20.
+
+## Cálculo del costo por camiseta
 
 ```
-Proveedor en China ──► Casillero en Miami ──► Geomil (courier) ──► Casa de Mario en Quito ──► Cliente
+costo_unitario = precio_proveedor × (1 − descuento)
+               + envío_a_miami_por_unidad
+               + (costo_geomil_del_paquete × peso_de_la_camiseta / peso_total_del_paquete)
+
+costo_geomil_del_paquete = libras_cobradas × 4.99 × 1.15 + 20 + 1 + entrega_domicilio
+libras_cobradas = max(1, redondear_hacia_arriba(peso_total))
 ```
 
-1. Mario compra al **proveedor en China** (pago del producto + envío China→Miami).
-2. El paquete llega a su **casillero en Miami**.
-3. **Geomil** (empresa courier) lo trae de Miami a **Quito**. Cobra por peso y puede haber impuestos/aranceles de aduana de Ecuador.
-4. Mario vende y entrega a clientes en Ecuador (en persona o envío local).
+Pesos estimados por camiseta (hay que confirmarlos con el primer paquete real): fan manga corta 0,6 lb · fan manga larga 0,7 · jugador 0,5 · retro 0,6.
 
-### Costos que importan
+Costos aproximados en Quito (pedido de 12, UPS, retiro en oficina): fan corta ~$18,90 · fan larga ~$21,70 · jugador Adidas ~$20,90 · jugador Nike ~$22,90 · retro ~$22,80.
 
-El **costo real** de cada camiseta no es solo lo que cobra el proveedor. Hay que sumar:
+## Precios de venta
 
-- Precio del proveedor (por unidad)
-- Envío China → Miami
-- Tarifa del casillero (si aplica)
-- Flete Geomil Miami → Quito (por peso)
-- Impuestos / aranceles de aduana
-- Comisiones de pago (transferencia, PayPal, tarjeta, etc.)
+| Modelo | Precio sugerido (USD) |
+| --- | --- |
+| Fan manga corta | 30–35 |
+| Fan manga larga | 33–36 |
+| Jugador Adidas | 38–40 |
+| Jugador Nike / Puma | 40–42 |
+| Retro | 35–38 |
+| Nombre y número | +5 a +8 |
 
-Los costos de envío e impuestos se pagan **por paquete (lote)**, así que hay que **repartirlos entre las camisetas del lote** para saber el costo real por unidad. Por defecto se reparten en partes iguales por unidad; más adelante se puede repartir por peso.
+Referencia del mercado: La Galería del Gol cobra fan ~$37,80, jugador ~$45,50 y retro $35–41 en oferta. Las originales cuestan $75–170.
 
-Gastos generales que no son de un lote: publicidad (Instagram/Facebook/TikTok), empaques, envíos locales a clientes, fotos, etc.
+## Impuestos (Ecuador)
 
-## Qué debe hacer la app
+- Tengo RUC como persona natural, régimen **RIMPE – Emprendedor**.
+- Facturación electrónica. El IVA es del **15%** y los precios al cliente lo incluyen.
+  - IVA de una venta = precio / 1,15 × 0,15
+  - Ingreso neto = precio / 1,15
+- Hay que declarar aunque las ventas sean $0. La app debe recordarme las fechas de declaración y guardar los comprobantes.
 
-1. **Pedidos de clientes (ventas):** quién compró, qué camiseta, talla, personalización, precio, abono/anticipo, estado y forma de pago.
-   Muchas ventas son **por encargo**: el cliente paga un anticipo antes de que la camiseta llegue de China.
-2. **Compras / lotes de importación:** qué se pidió al proveedor, cuánto costó y en qué etapa está el envío.
-3. **Gastos:** registrar cualquier gasto con fecha, categoría, monto y nota.
-4. **Inventario:** camisetas disponibles en Quito, en camino y ya reservadas para un cliente.
-5. **Panel (dashboard):** ventas, ganancia, gastos y margen del mes; camisetas más vendidas; dinero por cobrar; lotes en camino.
+## Base de datos (Supabase) — diseño objetivo
 
-### Estados
+> Estado: la base de datos instalada todavía tiene el diseño anterior (ver "Notas técnicas").
+> Pasar a este diseño requiere una migración que Mario debe aprobar antes.
 
-- **Lote de importación:** Pedido al proveedor → Enviado desde China → En casillero Miami → En tránsito (Geomil) → Recibido en Quito
-- **Pedido de cliente:** Por encargo (anticipo) → Pagado → Entregado · (o Cancelado)
+### Tabla `modelos`
+| campo | tipo | notas |
+| --- | --- | --- |
+| id | uuid | |
+| nombre | text | Fan manga corta, Fan manga larga, Jugador Adidas, Jugador Nike / Puma / Jordan / NB, Retro |
+| precio_proveedor | numeric | |
+| peso_lb | numeric | |
+| precio_venta_sugerido | numeric | |
+
+### Tabla `lotes` (cada importación)
+| campo | tipo | notas |
+| --- | --- | --- |
+| id | uuid | |
+| fecha_pedido | date | |
+| fecha_llegada | date | null hasta que llega |
+| proveedor | text | SoccerPlus, GMKits |
+| metodo_envio | text | USPS, UPS/FedEx, SZ-FedEx |
+| costo_proveedor | numeric | lo que pagué por PayPal |
+| costo_envio_miami | numeric | |
+| peso_lb | numeric | |
+| costo_geomil | numeric | |
+| guia | text | número de seguimiento |
+| estado | text | Pedido, En Miami, En Quito, Recibido |
+
+### Tabla `inventario`
+| campo | tipo | notas |
+| --- | --- | --- |
+| id | uuid | |
+| modelo_id | uuid → modelos | |
+| equipo | text | ej. "Real Madrid 26/27 local" |
+| talla | text | S, M, L, XL, 2XL, 3XL, Niño |
+| cantidad | int | |
+| costo_unitario | numeric | se calcula con el lote |
+| lote_id | uuid → lotes | |
+
+### Tabla `clientes`
+| campo | tipo | notas |
+| --- | --- | --- |
+| id | uuid | |
+| nombre | text | |
+| instagram | text | |
+| whatsapp | text | |
+| ciudad | text | |
+| equipo_favorito | text | |
+
+### Tabla `pedidos`
+| campo | tipo | notas |
+| --- | --- | --- |
+| id | uuid | |
+| fecha | date | |
+| cliente_id | uuid → clientes | |
+| modelo_id | uuid → modelos | |
+| equipo | text | |
+| talla | text | |
+| personalizacion | text | nombre y número, opcional |
+| precio_venta | numeric | IVA incluido |
+| anticipo | numeric | |
+| saldo | numeric | calculado: precio − anticipo |
+| estado | text | Preventa, Pagado, Entregado, Cancelado |
+| entrega | text | Quito en mano, USFQ, Servientrega |
+| costo | numeric | costo unitario guardado al momento de la venta |
+| inventario_id | uuid → inventario | null si es preventa |
+
+Al registrar una venta con stock, hay que **descontar 1 del inventario**. El costo se **guarda en el pedido** para que no cambie si después cambian los precios del proveedor.
+
+### Tabla `gastos`
+| campo | tipo | notas |
+| --- | --- | --- |
+| id | uuid | |
+| fecha | date | |
+| concepto | text | |
+| categoria | text | Compra a proveedor, Envío a Miami, Geomil, Envío local, Publicidad, Empaques, Impuestos, Otros |
+| monto | numeric | |
+| tipo | text | calculado: "Mercadería" (las 3 primeras categorías) u "Operativo" |
+| lote_id | uuid → lotes | opcional |
+
+## Panel de control (lo que necesito ver)
+
+- Mes seleccionable. Indicadores principales en una fila:
+  - Ventas del mes
+  - Ganancia del mes = (precio/1,15 − costo) de los pedidos no cancelados − gastos operativos
+  - Camisetas vendidas
+  - Por cobrar (saldo de las preventas)
+  - Pedidos por entregar
+  - Camisetas en stock
+- Gráfico de ventas y ganancia por mes.
+- Modelos y equipos más vendidos.
+- Stock por modelo y talla, con alerta cuando quedan menos de 2.
+- Cupo 4x4 usado en el año (compras a proveedor / $1.600), con alerta al pasar el 80%.
+- Lotes en camino y su estado.
+- Recordatorio de declaraciones del SRI.
 
 ## Tecnología
 
-- **Next.js** (App Router, TypeScript): la aplicación web.
-- **Supabase**: base de datos (PostgreSQL) e inicio de sesión. Solo Mario (y quien él autorice) puede entrar.
-- **Vercel**: donde se publica la app en internet.
-- **Tailwind CSS** para el diseño. Debe verse bien en **celular**, porque Mario la usará sobre todo desde el teléfono.
+- Next.js + Supabase (base de datos y login) + Vercel (publicación gratuita).
+- Solo yo tengo acceso con login. Más adelante se suma un **catálogo público** con botón "Pedir por WhatsApp".
+- Importar los datos que ya tengo en mi hoja (Pedidos, Inventario, Gastos) cuando la app esté lista.
 
-### Convenciones
+## Plan por fases
 
-- Toda la interfaz en **español** (Ecuador). Fechas `dd/mm/aaaa`, dinero `$1.234,56` o `$1,234.56` (decidir una y mantenerla).
-- Guardar montos de dinero como números decimales exactos (`numeric(10,2)`), nunca como texto.
-- Las claves secretas (Supabase, etc.) van en variables de entorno (`.env.local` y en Vercel), **nunca** en el código ni en git.
-- Activar Row Level Security (RLS) en todas las tablas de Supabase.
-- Los cambios a la base de datos se guardan como migraciones en `supabase/migrations/`.
+0. Bases ✅ (cuenta bancaria, capital, RUC)
+1. Primer pedido de 12 y relanzamiento en Instagram
+2. Registro en hojas
+3. **Esta app** (panel dinámico)
+4. Catálogo web público
+5. Escalar: importación formal y un segundo proveedor
+
+---
+
+# Notas técnicas (estado actual del código)
+
+## Ya construido y en uso
+
+- Login + lista de correos permitidos, pedidos, gastos, inventario y panel (ver estructura abajo).
+- Mario ya ejecutó en Supabase las 3 migraciones (tablas iniciales, descuento de inventario,
+  usuarios permitidos). **Cualquier cambio de diseño es una migración nueva**: nunca editar las ya aplicadas.
+
+## Diferencias entre lo construido y el diseño objetivo (pendiente, en este orden sugerido)
+
+1. `costos_modelo` (costo fijo por modelo) → `modelos` + costo por lote con la fórmula de arriba;
+   el pedido guarda su `costo` al venderse.
+2. Tablas nuevas: `lotes` y `clientes`.
+3. Pedidos: `Por encargo` → `Preventa`; agregar `personalizacion`, `entrega`, `cliente_id`, `inventario_id`, `costo`.
+4. Tallas: `XS…XXXL` → `S, M, L, XL, 2XL, 3XL, Niño`.
+5. Gastos: categorías nuevas y `tipo` (Mercadería / Operativo), `lote_id`.
+6. Panel: ganancia sin IVA (precio/1,15) y restando gastos operativos; mes seleccionable;
+   camisetas vendidas y en stock; equipos más vendidos; stock por modelo y talla con alerta < 2;
+   cupo con alerta > 80%; lotes en camino; recordatorio SRI.
+7. Después: comprobantes, catálogo público, importar la hoja de cálculo.
 
 ## Estructura del código
 
@@ -129,10 +277,3 @@ supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden
 ## Rama de trabajo
 
 Desarrollar en la rama `claude/camisetas-web-app-8m3dr1`.
-
-## Preguntas pendientes con Mario
-
-- ¿Precios de venta fijos por categoría o cada camiseta tiene su precio?
-- ¿Cómo cobra Geomil exactamente (por libra/kilo, tarifa mínima)? ¿Cuánto suele pagar de impuestos?
-- ¿Formas de pago que usa (transferencia, efectivo, Deuna, PayPal…)?
-- ¿Alguien más (socio, ayudante) necesita acceso a la app?
