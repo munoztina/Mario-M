@@ -81,6 +81,34 @@ Gastos generales que no son de un lote: publicidad (Instagram/Facebook/TikTok), 
 - Activar Row Level Security (RLS) en todas las tablas de Supabase.
 - Los cambios a la base de datos se guardan como migraciones en `supabase/migrations/`.
 
+## Estructura del código
+
+```
+app/login/                 Inicio de sesión
+app/(app)/pedidos/         Lista, nuevo, editar ([id]) y acciones del servidor
+app/(app)/gastos/          Igual que pedidos
+app/(app)/inventario/      Igual, más botones rápidos − / + en la lista
+components/campos.tsx      Campos de formulario grandes para celular (Formulario, Opciones, Contador…)
+components/estructura.tsx  Encabezado, botón flotante "+", tarjetas
+lib/datos.ts               Listas fijas (tallas, estados, categorías) y tipos
+lib/formato.ts             Dinero, fechas (zona America/Guayaquil), leer montos "12,50"
+lib/supabase/server.ts     Cliente de Supabase en el servidor
+proxy.ts                   Exige sesión en todas las páginas menos /login
+supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden)
+```
+
+### Reglas importantes
+
+- **Inventario automático:** un pedido con `descontar = true` resta 1 del inventario
+  (trigger `pedidos_inventario`). Cancelarlo o borrarlo lo devuelve; cambiar
+  modelo/equipo/talla mueve la unidad. Sin stock, la base de datos rechaza el pedido.
+  No dupliques esta lógica en el código: vive en la base de datos.
+- Un pedido = una camiseta.
+- Los formularios usan `<Formulario>` (no `<form action>`) para que React 19 no borre
+  lo escrito cuando hay un error.
+- Next.js 16: el middleware se llama `proxy.ts`; `params` y `searchParams` son Promesas.
+- Antes de entregar: `npx tsc --noEmit` y `npm run build`.
+
 ## Rama de trabajo
 
 Desarrollar en la rama `claude/camisetas-web-app-8m3dr1`.

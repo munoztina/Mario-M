@@ -26,6 +26,10 @@ Tiempo: unos 15 minutos. No necesitas instalar nada, todo se hace en el navegado
    de este proyecto, copia **todo** su contenido y pégalo en el editor.
 4. Pulsa **Run** (o Ctrl + Enter).
 5. Debe salir **"Success. No rows returned"**. Si sale un error en rojo, cópialo y mándamelo.
+6. Repite lo mismo con el segundo archivo,
+   `supabase/migrations/20261124000000_descontar_inventario.sql`
+   (es el que hace que al vender se reste del inventario).
+   **Importante:** primero el archivo 1 y después el 2, cada uno una sola vez.
 
 Para comprobar: en el menú izquierdo entra a **Table Editor** y deberías ver 4 tablas:
 
