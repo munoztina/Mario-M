@@ -29,7 +29,13 @@ Tiempo: unos 15 minutos. No necesitas instalar nada, todo se hace en el navegado
 6. Repite lo mismo con el segundo archivo,
    `supabase/migrations/20261124000000_descontar_inventario.sql`
    (es el que hace que al vender se reste del inventario).
-   **Importante:** primero el archivo 1 y después el 2, cada uno una sola vez.
+7. Por último, el tercer archivo:
+   `supabase/migrations/20261125000000_solo_usuarios_permitidos.sql`.
+   **Antes de pulsar Run**, en la última línea cambia `TU-CORREO@ejemplo.com` por
+   tu correo (el mismo con el que creas tu usuario en el paso 4).
+   Este archivo hace que **solo tu correo** pueda ver los datos.
+
+   **Importante:** ejecútalos en orden (1, 2, 3) y cada uno una sola vez.
 
 Para comprobar: en el menú izquierdo entra a **Table Editor** y deberías ver 4 tablas:
 
@@ -65,8 +71,10 @@ Ahora **cierra la puerta a desconocidos**, para que nadie más pueda registrarse
 5. En **Authentication** busca **Sign In / Providers** (o **Settings**).
 6. Desactiva **Allow new users to sign up** y guarda.
 
-> Seguridad: las tablas están protegidas. Solo alguien que haya iniciado
-> sesión con un usuario que tú creaste puede ver o cambiar los datos.
+> Seguridad: hay dos candados. (1) Nadie puede registrarse solo. (2) Aunque alguien
+> tuviera una cuenta, la base de datos solo muestra datos a los correos de la tabla
+> `usuarios_permitidos`. Para dar acceso a otra persona (un socio, por ejemplo),
+> crea su usuario aquí **y** agrega su correo en esa tabla (Table Editor).
 
 ## Paso 5: Copiar las dos "llaves" que necesita la app
 

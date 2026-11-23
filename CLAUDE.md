@@ -113,6 +113,13 @@ supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden
   dos veces el envío/Geomil, que ya están en `costos_modelo`.
 - **Cupo 4x4:** $1.600 por año calendario (`CUPO_4X4_ANUAL` en `lib/datos.ts`); se calcula
   con los gastos de categoría «Compra a proveedor» del año en curso.
+- **Acceso:** dos candados. `proxy.ts` exige sesión; `app/(app)/layout.tsx` llama a
+  `rpc("es_permitido")` y manda a `/sin-acceso` si el correo no está en
+  `usuarios_permitidos`. Las políticas RLS de todas las tablas usan `es_permitido()`,
+  así que la protección real está en la base de datos.
+- **Publicación:** Vercel publica automáticamente la rama principal del repositorio
+  (`claude/camisetas-web-app-8m3dr1`). Variables: `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Guía en `GUIA-VERCEL.md`.
 - **Alerta de stock:** `STOCK_MINIMO` (2) en `lib/datos.ts`.
 - Los formularios usan `<Formulario>` (no `<form action>`) para que React 19 no borre
   lo escrito cuando hay un error.

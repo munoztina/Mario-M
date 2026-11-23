@@ -4,7 +4,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Panel Camisetas",
   description: "Pedidos, gastos e inventario",
-  icons: { icon: "/icon.svg" },
+  icons: { icon: "/icon.svg", apple: "/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: "Camisetas", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
