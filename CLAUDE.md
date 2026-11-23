@@ -85,6 +85,10 @@ Gastos generales que no son de un lote: publicidad (Instagram/Facebook/TikTok), 
 
 ```
 app/login/                 Inicio de sesión
+app/(app)/page.tsx         Panel (inicio): cifras del mes, gráficos, cupo 4x4, alertas de stock
+lib/panel.ts               Todos los cálculos del panel
+components/graficos.tsx    Gráfico de ventas por mes (tocar una columna muestra el detalle)
+components/panel.tsx       Cifras, barras, columnas y medidor del cupo
 app/(app)/pedidos/         Lista, nuevo, editar ([id]) y acciones del servidor
 app/(app)/gastos/          Igual que pedidos
 app/(app)/inventario/      Igual, más botones rápidos − / + en la lista
@@ -104,6 +108,12 @@ supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden
   modelo/equipo/talla mueve la unidad. Sin stock, la base de datos rechaza el pedido.
   No dupliques esta lógica en el código: vive en la base de datos.
 - Un pedido = una camiseta.
+- **Panel:** ventas = suma de `precio` de pedidos no cancelados; ganancia = precio − `costo_total`
+  del modelo (vista `pedidos_con_ganancia`). Los gastos se muestran aparte para no contar
+  dos veces el envío/Geomil, que ya están en `costos_modelo`.
+- **Cupo 4x4:** $1.600 por año calendario (`CUPO_4X4_ANUAL` en `lib/datos.ts`); se calcula
+  con los gastos de categoría «Compra a proveedor» del año en curso.
+- **Alerta de stock:** `STOCK_MINIMO` (2) en `lib/datos.ts`.
 - Los formularios usan `<Formulario>` (no `<form action>`) para que React 19 no borre
   lo escrito cuando hay un error.
 - Next.js 16: el middleware se llama `proxy.ts`; `params` y `searchParams` son Promesas.

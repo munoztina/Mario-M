@@ -54,3 +54,9 @@ export type CostoModelo = {
 };
 
 export type EstadoFormulario = { error?: string } | undefined;
+
+/** Cupo anual del régimen 4x4 (courier categoría B), en dólares, por año calendario. */
+export const CUPO_4X4_ANUAL = 1600;
+
+/** Alerta de stock: avisa cuando de una camiseta quedan esta cantidad o menos. */
+export const STOCK_MINIMO = 2;

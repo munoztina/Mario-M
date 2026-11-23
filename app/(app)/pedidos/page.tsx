@@ -3,7 +3,6 @@ import { Aviso, BotonNuevo, Encabezado, Tarjeta, Vacio } from "@/components/estr
 import { crearClienteSupabase } from "@/lib/supabase/server";
 import { ESTADOS_PEDIDO, type Pedido } from "@/lib/datos";
 import { formatoDinero, formatoFecha } from "@/lib/formato";
-import { cerrarSesion } from "@/app/login/acciones";
 
 const COLOR_ESTADO: Record<string, string> = {
   "Por encargo": "bg-amber-100 text-amber-800",
@@ -40,14 +39,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
 
   return (
     <>
-      <Encabezado
-        titulo="Pedidos"
-        accion={
-          <form action={cerrarSesion}>
-            <button className="rounded-lg px-2 py-1 text-sm text-zinc-500 active:bg-zinc-100">Salir</button>
-          </form>
-        }
-      />
+      <Encabezado titulo="Pedidos" />
       <Aviso ok={ok ? AVISOS[ok] : undefined} />
       {error && <p className="mb-3 text-sm text-red-600">No se pudieron cargar los pedidos: {error.message}</p>}
 

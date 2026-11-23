@@ -11,7 +11,7 @@ export async function iniciarSesion(_: EstadoFormulario, form: FormData): Promis
     password: String(form.get("password") ?? ""),
   });
   if (error) return { error: "Correo o contraseña incorrectos." };
-  redirect("/pedidos");
+  redirect("/");
 }
 
 export async function cerrarSesion() {
