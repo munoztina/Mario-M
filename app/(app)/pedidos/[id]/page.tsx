@@ -9,10 +9,10 @@ import { cargarOpcionesPedido } from "../cargarOpciones";
 import { borrarPedido } from "../acciones";
 
 export default async function EditarPedido({ params }: { params: Promise<{ id: string }> }) {
-  const id = Number((await params).id);
+  const { id } = await params;
   const supabase = await crearClienteSupabase();
   const [{ data: pedido }, opciones] = await Promise.all([
-    supabase.from("pedidos").select("*").eq("id", id).maybeSingle(),
+    supabase.from("pedidos_detalle").select("*").eq("id", id).maybeSingle(),
     cargarOpcionesPedido(),
   ]);
   if (!pedido) notFound();
@@ -24,7 +24,7 @@ export default async function EditarPedido({ params }: { params: Promise<{ id: s
       <form action={borrarPedido.bind(null, id)} className="mt-6">
         <BotonBorrar
           pregunta={
-            pedido.descontar && pedido.estado !== "Cancelado"
+            pedido.inventario_id && pedido.estado !== "Cancelado"
               ? "¿Borrar este pedido? La camiseta vuelve al inventario."
               : "¿Borrar este pedido?"
           }

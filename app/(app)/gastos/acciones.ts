@@ -7,7 +7,7 @@ import { CATEGORIAS_GASTO, type EstadoFormulario } from "@/lib/datos";
 import { leerMonto, limpiarTexto } from "@/lib/formato";
 import { mensajeError } from "@/lib/errores";
 
-export async function guardarGasto(id: number | null, _: EstadoFormulario, form: FormData): Promise<EstadoFormulario> {
+export async function guardarGasto(id: string | null, _: EstadoFormulario, form: FormData): Promise<EstadoFormulario> {
   const datos = {
     fecha: String(form.get("fecha") ?? ""),
     concepto: limpiarTexto(form.get("concepto")),
@@ -25,14 +25,14 @@ export async function guardarGasto(id: number | null, _: EstadoFormulario, form:
     : await supabase.from("gastos").insert(datos);
   if (error) return { error: mensajeError(error) };
 
-  revalidatePath("/gastos");
+  revalidatePath("/", "layout");
   redirect(`/gastos?ok=${id ? "editado" : "creado"}`);
 }
 
-export async function borrarGasto(id: number) {
+export async function borrarGasto(id: string) {
   const supabase = await crearClienteSupabase();
   const { error } = await supabase.from("gastos").delete().eq("id", id);
   if (error) throw new Error(mensajeError(error));
-  revalidatePath("/gastos");
+  revalidatePath("/", "layout");
   redirect("/gastos?ok=borrado");
 }

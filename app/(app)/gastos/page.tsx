@@ -38,10 +38,16 @@ export default async function Gastos({ searchParams }: { searchParams: Promise<{
         <div className="space-y-6">
           {[...meses.entries()].map(([mes, lista]) => (
             <section key={mes}>
-              <h2 className="mb-2 flex items-baseline justify-between px-1">
-                <span className="font-semibold">{nombreMes(mes + "-01")}</span>
-                <span className="text-sm text-zinc-600">
-                  Total: <strong className="text-zinc-900">{formatoDinero(lista.reduce((s, g) => s + Number(g.monto), 0))}</strong>
+              <h2 className="mb-2 px-1">
+                <span className="flex items-baseline justify-between">
+                  <span className="font-semibold">{nombreMes(mes + "-01")}</span>
+                  <span className="text-sm text-zinc-600">
+                    Total: <strong className="text-zinc-900">{formatoDinero(lista.reduce((s, g) => s + Number(g.monto), 0))}</strong>
+                  </span>
+                </span>
+                <span className="block text-right text-xs font-normal text-zinc-500">
+                  Mercadería {formatoDinero(lista.filter((g) => g.tipo === "Mercadería").reduce((s, g) => s + Number(g.monto), 0))} · Operativos{" "}
+                  {formatoDinero(lista.filter((g) => g.tipo !== "Mercadería").reduce((s, g) => s + Number(g.monto), 0))}
                 </span>
               </h2>
               <ul className="space-y-2">
@@ -54,6 +60,14 @@ export default async function Gastos({ searchParams }: { searchParams: Promise<{
                           <p className="text-sm text-zinc-500">
                             {formatoFecha(g.fecha)} · {g.categoria}
                           </p>
+                          <span
+                            className={
+                              "mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold " +
+                              (g.tipo === "Mercadería" ? "bg-sky-100 text-sky-800" : "bg-zinc-200 text-zinc-700")
+                            }
+                          >
+                            {g.tipo}
+                          </span>
                         </div>
                         <strong className="shrink-0">{formatoDinero(g.monto)}</strong>
                       </div>

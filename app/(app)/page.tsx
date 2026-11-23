@@ -3,7 +3,7 @@ import { Encabezado } from "@/components/estructura";
 import { BarrasHorizontales, Cifra, Columnas, Medidor, Seccion } from "@/components/panel";
 import { GraficoVentasMes } from "@/components/graficos";
 import { cargarPanel } from "@/lib/panel";
-import { STOCK_MINIMO } from "@/lib/datos";
+import { STOCK_ALERTA_MENOS_DE } from "@/lib/datos";
 import { formatoDinero, formatoFecha, hoyEcuador } from "@/lib/formato";
 import { cerrarSesion } from "@/app/login/acciones";
 
@@ -44,15 +44,15 @@ export default async function Panel() {
           <Cifra
             etiqueta="Ventas del mes"
             valor={formatoDinero(d.esteMes.ventas)}
-            detalle={comparacion(d.esteMes.ventas, d.mesAnterior.ventas, nombreMesAnterior) ?? `${d.esteMes.unidades} camisetas`}
+            detalle={comparacion(d.esteMes.ventas, d.mesAnterior.ventas, nombreMesAnterior) ?? "IVA incluido"}
           />
           <Cifra
             etiqueta="Ganancia del mes"
             valor={formatoDinero(d.esteMes.ganancia)}
-            detalle={
-              d.esteMes.ventas > 0 ? `Margen ${Math.round((d.esteMes.ganancia / d.esteMes.ventas) * 100)}%` : "Precio − costo del modelo"
-            }
+            detalle={d.esteMes.ventas > 0 ? `Margen ${Math.round((d.esteMes.ganancia / d.detalleGanancia.ventasSinIva) * 100)}% sin IVA` : "Sin IVA y sin gastos operativos"}
           />
+          <Cifra etiqueta="Camisetas vendidas" valor={String(d.esteMes.unidades)} detalle="este mes" />
+          <Cifra etiqueta="En stock" valor={String(d.totalStock)} detalle="camisetas en Quito" href="/inventario" />
           <Cifra
             etiqueta="Por cobrar"
             valor={formatoDinero(d.porCobrar)}
@@ -66,10 +66,15 @@ export default async function Panel() {
             href="/pedidos"
           />
         </div>
-        <p className="px-1 text-xs text-zinc-500">
-          Gastos registrados este mes: <strong className="text-zinc-700">{formatoDinero(d.gastosDelMes)}</strong>. La ganancia ya descuenta el
-          costo de cada camiseta (proveedor, envíos e impuestos de «costos_modelo»).
-        </p>
+        <details className="px-1 text-xs text-zinc-500">
+          <summary className="cursor-pointer">¿Cómo se calcula la ganancia?</summary>
+          <p className="mt-1 leading-relaxed">
+            Ventas sin IVA {formatoDinero(d.detalleGanancia.ventasSinIva)} − costo de las camisetas{" "}
+            {formatoDinero(d.detalleGanancia.costo)} − gastos operativos {formatoDinero(d.detalleGanancia.operativos)} ={" "}
+            <strong className="text-zinc-700">{formatoDinero(d.esteMes.ganancia)}</strong>. Los gastos de mercadería (proveedor, envío a
+            Miami, Geomil) no se restan porque ya están en el costo de cada camiseta.
+          </p>
+        </details>
 
         <Seccion titulo="Ventas por mes">
           <GraficoVentasMes meses={d.meses} />
@@ -85,9 +90,9 @@ export default async function Panel() {
           <Medidor porcentaje={d.cupo.porcentaje} />
           <p className="mt-2 text-sm text-zinc-600">
             Te quedan <strong className="text-zinc-900">{formatoDinero(d.cupo.restante)}</strong>
-            {d.cupo.camisetasAprox !== null && <> (≈ {d.cupo.camisetasAprox} camisetas al costo promedio del proveedor)</>}.
+            {d.cupo.camisetasAprox !== null && <> (≈ {d.cupo.camisetasAprox} camisetas al precio promedio del proveedor)</>}.
           </p>
-          <p className="mt-1 text-xs text-zinc-500">Suma de tus gastos «Compra a proveedor» de este año. El cupo se reinicia el 1 de enero.</p>
+          <p className="mt-1 text-xs text-zinc-500">Suma de tus gastos «Compra a proveedor» de este año (valor FOB). El cupo se reinicia el 1 de enero. Máximo por paquete: 8 lb y $400.</p>
         </Seccion>
 
         <Seccion titulo="Por entregar" enlace={{ href: "/pedidos", texto: "Ver pedidos" }}>
@@ -124,11 +129,15 @@ export default async function Panel() {
           {d.modelos.length === 0 ? (
             <p className="text-sm text-zinc-500">Todavía no hay ventas.</p>
           ) : (
-            <BarrasHorizontales
-              filas={d.modelos.map((m) => ({ nombre: m.modelo, valor: m.unidades, texto: `${m.unidades} unid.` }))}
-            />
+            <BarrasHorizontales filas={d.modelos.map((m) => ({ nombre: m.nombre, valor: m.unidades, texto: `${m.unidades} unid.` }))} />
           )}
         </Seccion>
+
+        {d.equipos.length > 0 && (
+          <Seccion titulo="Equipos más vendidos" enlace={{ href: "/pedidos", texto: "Top 5" }}>
+            <BarrasHorizontales filas={d.equipos.map((m) => ({ nombre: m.nombre, valor: m.unidades, texto: `${m.unidades} unid.` }))} />
+          </Seccion>
+        )}
 
         <Seccion titulo="Stock por talla" enlace={{ href: "/inventario", texto: `${d.totalStock} en total` }}>
           <Columnas datos={d.porTalla.map((t) => ({ nombre: t.talla, valor: t.unidades }))} />
@@ -137,7 +146,7 @@ export default async function Panel() {
             <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-3">
               <p className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-zinc-900">
                 <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fab219] text-xs text-zinc-900">⚠</span>
-                Quedan pocas ({STOCK_MINIMO} o menos)
+                Quedan pocas (menos de {STOCK_ALERTA_MENOS_DE})
               </p>
               <ul className="space-y-1 text-sm text-zinc-700">
                 {d.pocas.slice(0, 8).map((i) => (

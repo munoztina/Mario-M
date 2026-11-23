@@ -96,8 +96,9 @@ Referencia del mercado: La Galería del Gol cobra fan ~$37,80, jugador ~$45,50 y
 
 ## Base de datos (Supabase) — diseño objetivo
 
-> Estado: la base de datos instalada todavía tiene el diseño anterior (ver "Notas técnicas").
-> Pasar a este diseño requiere una migración que Mario debe aprobar antes.
+> Estado: implementado en la migración `20261126000000_diseno_nuevo.sql` (paso 1).
+> Extra: `modelos.costo_estimado` (costo usado en preventas hasta tener costos de proveedores) y `modelos.orden`;
+> vistas `pedidos_detalle` e `inventario_detalle`.
 
 ### Tabla `modelos`
 | campo | tipo | notas |
@@ -212,22 +213,26 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
 
 ## Ya construido y en uso
 
-- Login + lista de correos permitidos, pedidos, gastos, inventario y panel (ver estructura abajo).
-- Mario ya ejecutó en Supabase las 3 migraciones (tablas iniciales, descuento de inventario,
-  usuarios permitidos). **Cualquier cambio de diseño es una migración nueva**: nunca editar las ya aplicadas.
+- Login + lista de correos permitidos, pedidos, gastos, inventario, modelos y costos, y panel.
+- Migraciones aplicadas por Mario: 1, 2 y 3 (juntas, en "todo en uno"). La 4
+  (`20261126000000_diseno_nuevo.sql`) borra las tablas de prueba y crea el diseño nuevo.
+  **Cualquier cambio futuro es una migración nueva**: nunca editar las ya aplicadas.
 
-## Diferencias entre lo construido y el diseño objetivo (pendiente, en este orden sugerido)
+## Decisiones de Mario
 
-1. `costos_modelo` (costo fijo por modelo) → `modelos` + costo por lote con la fórmula de arriba;
-   el pedido guarda su `costo` al venderse.
-2. Tablas nuevas: `lotes` y `clientes`.
-3. Pedidos: `Por encargo` → `Preventa`; agregar `personalizacion`, `entrega`, `cliente_id`, `inventario_id`, `costo`.
-4. Tallas: `XS…XXXL` → `S, M, L, XL, 2XL, 3XL, Niño`.
-5. Gastos: categorías nuevas y `tipo` (Mercadería / Operativo), `lote_id`.
-6. Panel: ganancia sin IVA (precio/1,15) y restando gastos operativos; mes seleccionable;
-   camisetas vendidas y en stock; equipos más vendidos; stock por modelo y talla con alerta < 2;
-   cupo con alerta > 80%; lotes en camino; recordatorio SRI.
-7. Después: comprobantes, catálogo público, importar la hoja de cálculo.
+- Preventa: se guarda el **costo estimado** del modelo hasta tener costos fijos con proveedores.
+- Lotes: **por ahora no** crean gastos automáticamente.
+
+## Pendiente (en este orden)
+
+1. ✅ Paso 1: diseño nuevo (modelos, clientes, preventa, personalización, entrega, tallas,
+   costo guardado en el pedido, gastos Mercadería/Operativo, ganancia sin IVA).
+2. Paso 2: pantalla de **lotes** con la fórmula de costo de Geomil; al recibir un lote,
+   pasar sus camisetas al inventario con su costo real.
+3. Paso 3: panel completo: mes seleccionable, gráfico de ventas y ganancia, stock por modelo
+   y talla, lotes en camino.
+4. Paso 4: recordatorio de declaraciones del SRI y comprobantes.
+5. Después: catálogo público con "Pedir por WhatsApp" e importar la hoja de cálculo.
 
 ## Estructura del código
 
@@ -240,6 +245,7 @@ components/panel.tsx       Cifras, barras, columnas y medidor del cupo
 app/(app)/pedidos/         Lista, nuevo, editar ([id]) y acciones del servidor
 app/(app)/gastos/          Igual que pedidos
 app/(app)/inventario/      Igual, más botones rápidos − / + en la lista
+app/(app)/modelos/         Editar costo estimado, precio sugerido, precio proveedor y peso
 components/campos.tsx      Campos de formulario grandes para celular (Formulario, Opciones, Contador…)
 components/estructura.tsx  Encabezado, botón flotante "+", tarjetas
 lib/datos.ts               Listas fijas (tallas, estados, categorías) y tipos
@@ -251,16 +257,16 @@ supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden
 
 ### Reglas importantes
 
-- **Inventario automático:** un pedido con `descontar = true` resta 1 del inventario
-  (trigger `pedidos_inventario`). Cancelarlo o borrarlo lo devuelve; cambiar
-  modelo/equipo/talla mueve la unidad. Sin stock, la base de datos rechaza el pedido.
-  No dupliques esta lógica en el código: vive en la base de datos.
-- Un pedido = una camiseta.
-- **Panel:** ventas = suma de `precio` de pedidos no cancelados; ganancia = precio − `costo_total`
-  del modelo (vista `pedidos_con_ganancia`). Los gastos se muestran aparte para no contar
-  dos veces el envío/Geomil, que ya están en `costos_modelo`.
-- **Cupo 4x4:** $1.600 por año calendario (`CUPO_4X4_ANUAL` en `lib/datos.ts`); se calcula
-  con los gastos de categoría «Compra a proveedor» del año en curso.
+- **Inventario automático:** un pedido con `inventario_id` (venta de stock) resta 1 de esa fila
+  (triggers `pedidos_preparar` y `pedidos_inventario`). La base de datos copia modelo/equipo/talla
+  del inventario y guarda `costo` al crear el pedido (stock: `costo_unitario`; preventa:
+  `modelos.costo_estimado`); el costo no cambia aunque cambien los precios. Cancelar o borrar
+  devuelve la camiseta. No dupliques esta lógica en el código: vive en la base de datos.
+- Un pedido = una camiseta. Clientes: se buscan por nombre (sin mayúsculas) o se crean al guardar el pedido.
+- **Panel:** ventas = Σ `precio_venta` (con IVA); ganancia del mes = Σ(`precio_venta`/1,15 − `costo`)
+  − gastos `tipo = 'Operativo'`. Los gastos de mercadería no se restan (ya están en el costo).
+- **Cupo 4x4:** $1.600 por año calendario (`CUPO_4X4_ANUAL`), alerta desde 80%; se calcula con
+  los gastos «Compra a proveedor» del año.
 - **Acceso:** dos candados. `proxy.ts` exige sesión; `app/(app)/layout.tsx` llama a
   `rpc("es_permitido")` y manda a `/sin-acceso` si el correo no está en
   `usuarios_permitidos`. Las políticas RLS de todas las tablas usan `es_permitido()`,
@@ -268,7 +274,7 @@ supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden
 - **Publicación:** Vercel publica automáticamente la rama principal del repositorio
   (`claude/camisetas-web-app-8m3dr1`). Variables: `NEXT_PUBLIC_SUPABASE_URL`,
   `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Guía en `GUIA-VERCEL.md`.
-- **Alerta de stock:** `STOCK_MINIMO` (2) en `lib/datos.ts`.
+- **Alerta de stock:** cuando quedan menos de `STOCK_ALERTA_MENOS_DE` (2), en `lib/datos.ts`.
 - Los formularios usan `<Formulario>` (no `<form action>`) para que React 19 no borre
   lo escrito cuando hay un error.
 - Next.js 16: el middleware se llama `proxy.ts`; `params` y `searchParams` son Promesas.

@@ -5,7 +5,7 @@ import { ESTADOS_PEDIDO, type Pedido } from "@/lib/datos";
 import { formatoDinero, formatoFecha } from "@/lib/formato";
 
 const COLOR_ESTADO: Record<string, string> = {
-  "Por encargo": "bg-amber-100 text-amber-800",
+  Preventa: "bg-amber-100 text-amber-800",
   Pagado: "bg-sky-100 text-sky-800",
   Entregado: "bg-emerald-100 text-emerald-800",
   Cancelado: "bg-zinc-200 text-zinc-600 line-through",
@@ -22,7 +22,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
   const supabase = await crearClienteSupabase();
 
   let consulta = supabase
-    .from("pedidos")
+    .from("pedidos_detalle")
     .select("*")
     .order("fecha", { ascending: false })
     .order("id", { ascending: false })
@@ -77,6 +77,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                     <p className="truncate text-sm text-zinc-600">
                       {p.equipo} · {p.modelo} · {p.talla}
                     </p>
+                    {p.personalizacion && <p className="truncate text-xs text-zinc-500">✎ {p.personalizacion}</p>}
                   </div>
                   <span className={"shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold " + (COLOR_ESTADO[p.estado] ?? "")}>
                     {p.estado}
@@ -84,11 +85,10 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                 </div>
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <span className="text-zinc-500">
-                    {formatoFecha(p.fecha)}
-                    {p.descontar ? " · de stock" : ""}
+                    {formatoFecha(p.fecha)} · {p.entrega}
                   </span>
                   <span>
-                    <strong>{formatoDinero(p.precio)}</strong>
+                    <strong>{formatoDinero(p.precio_venta)}</strong>
                     {Number(p.saldo) > 0 && p.estado !== "Cancelado" && (
                       <span className="text-amber-700"> · debe {formatoDinero(p.saldo)}</span>
                     )}

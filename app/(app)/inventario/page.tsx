@@ -3,6 +3,7 @@ import { Aviso, BotonNuevo, Encabezado, Vacio } from "@/components/estructura";
 import { claseInput } from "@/components/campos";
 import { crearClienteSupabase } from "@/lib/supabase/server";
 import { TALLAS, type ItemInventario } from "@/lib/datos";
+import { formatoDinero } from "@/lib/formato";
 import { ajustarCantidad } from "./acciones";
 
 const AVISOS: Record<string, string> = {
@@ -15,14 +16,14 @@ const AVISOS: Record<string, string> = {
 export default async function Inventario({ searchParams }: { searchParams: Promise<{ q?: string; ok?: string; ver?: string }> }) {
   const { q, ok, ver } = await searchParams;
   const supabase = await crearClienteSupabase();
-  let consulta = supabase.from("inventario").select("*");
+  let consulta = supabase.from("inventario_detalle").select("*");
   if (q) consulta = consulta.ilike("equipo", `%${q}%`);
   if (ver !== "todo") consulta = consulta.gt("cantidad", 0);
   const { data, error } = await consulta;
 
   const orden = (t: string) => TALLAS.indexOf(t as (typeof TALLAS)[number]);
   const items = ((data ?? []) as ItemInventario[]).sort(
-    (a, b) => a.equipo.localeCompare(b.equipo, "es") || a.modelo.localeCompare(b.modelo) || orden(a.talla) - orden(b.talla),
+    (a, b) => a.equipo.localeCompare(b.equipo, "es") || a.modelo_orden - b.modelo_orden || orden(a.talla) - orden(b.talla),
   );
   const total = items.reduce((s, i) => s + i.cantidad, 0);
 
@@ -37,7 +38,15 @@ export default async function Inventario({ searchParams }: { searchParams: Promi
 
   return (
     <>
-      <Encabezado titulo="Inventario" accion={<span className="text-sm text-zinc-500">{total} en stock</span>} />
+      <Encabezado
+        titulo="Inventario"
+        accion={
+          <Link href="/modelos" className="rounded-lg px-2 py-1 text-sm font-medium text-emerald-700 active:bg-emerald-50">
+            Modelos y costos
+          </Link>
+        }
+      />
+      <p className="-mt-2 mb-3 text-sm text-zinc-500">{total} camisetas en stock</p>
       <Aviso ok={ok ? AVISOS[ok] : undefined} />
       {error && <p className="mb-3 text-sm text-red-600">No se pudo cargar el inventario: {error.message}</p>}
 
@@ -70,6 +79,7 @@ export default async function Inventario({ searchParams }: { searchParams: Promi
                       <span className="w-12 rounded-lg bg-zinc-100 py-1 text-center text-sm font-semibold">{i.talla}</span>
                       <span className={"text-sm " + (i.cantidad === 0 ? "text-red-600" : "text-zinc-600")}>
                         {i.cantidad === 0 ? "Agotada" : `${i.cantidad} ${i.cantidad === 1 ? "unidad" : "unidades"}`}
+                        <span className="block text-xs text-zinc-400">costo {formatoDinero(i.costo_unitario)}</span>
                       </span>
                     </Link>
                     <form action={ajustarCantidad.bind(null, i.id, -1)}>

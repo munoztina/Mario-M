@@ -25,12 +25,16 @@ export function FormularioGasto({ gasto, hoy }: { gasto?: Gasto; hoy: string }) 
           defaultValue={gasto?.concepto}
           required
           autoComplete="off"
-          placeholder="Ej.: Geomil paquete 12 camisetas"
+          placeholder="Ej.: Geomil paquete de 12"
           className={claseInput}
         />
       </Campo>
       <CampoGrupo etiqueta="Categoría">
         <Opciones nombre="categoria" opciones={CATEGORIAS_GASTO} valor={gasto?.categoria ?? ""} columnas={2} />
+        <p className="mt-1.5 text-xs text-zinc-500">
+          Las 3 primeras son <strong>mercadería</strong> (ya están dentro del costo de cada camiseta). Las demás son
+          <strong> gastos operativos</strong> y se restan de la ganancia del mes.
+        </p>
       </CampoGrupo>
       <Campo etiqueta="Fecha">
         <input name="fecha" type="date" defaultValue={gasto?.fecha ?? hoy} required className={claseInput} />

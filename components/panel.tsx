@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CUPO_ALERTA_PORCENTAJE } from "@/lib/datos";
 
 export function Seccion({ titulo, enlace, children }: { titulo: string; enlace?: { href: string; texto: string }; children: ReactNode }) {
   return (
@@ -77,13 +78,13 @@ export function Columnas({ datos }: { datos: { nombre: string; valor: number }[]
 
 const NIVELES = {
   bien: { color: "#0ca30c", icono: "✓", texto: "Vas bien" },
-  cuidado: { color: "#fab219", icono: "⚠", texto: "Cuidado: más de la mitad usada" },
-  critico: { color: "#d03b3b", icono: "⛔", texto: "Casi sin cupo" },
+  cuidado: { color: "#fab219", icono: "⚠", texto: "Pasaste el 80% del cupo" },
+  critico: { color: "#d03b3b", icono: "⛔", texto: "Cupo agotado: lo siguiente debe ser importación formal" },
 } as const;
 
 /** Medidor del cupo: barra de progreso con estado (color + ícono + texto). */
 export function Medidor({ porcentaje }: { porcentaje: number }) {
-  const nivel = porcentaje >= 85 ? NIVELES.critico : porcentaje >= 60 ? NIVELES.cuidado : NIVELES.bien;
+  const nivel = porcentaje >= 100 ? NIVELES.critico : porcentaje >= CUPO_ALERTA_PORCENTAJE ? NIVELES.cuidado : NIVELES.bien;
   return (
     <div>
       <div

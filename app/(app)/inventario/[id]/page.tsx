@@ -8,10 +8,10 @@ import { cargarOpcionesInventario } from "../cargarOpciones";
 import { borrarInventario } from "../acciones";
 
 export default async function EditarInventario({ params }: { params: Promise<{ id: string }> }) {
-  const id = Number((await params).id);
+  const { id } = await params;
   const supabase = await crearClienteSupabase();
   const [{ data: item }, opciones] = await Promise.all([
-    supabase.from("inventario").select("*").eq("id", id).maybeSingle(),
+    supabase.from("inventario_detalle").select("*").eq("id", id).maybeSingle(),
     cargarOpcionesInventario(),
   ]);
   if (!item) notFound();

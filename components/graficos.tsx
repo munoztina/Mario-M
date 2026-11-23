@@ -6,7 +6,7 @@ import { formatoDinero } from "@/lib/formato";
 const MESES_CORTOS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 const MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
-type Mes = { clave: string; ventas: number; ganancia: number; unidades: number };
+type Mes = { clave: string; ventas: number; ganancia: number; unidades: number; operativos: number };
 
 /** Escala "bonita" para el eje: 0, 250, 500… */
 function maximoRedondo(v: number) {

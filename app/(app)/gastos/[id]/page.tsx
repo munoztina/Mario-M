@@ -8,7 +8,7 @@ import { FormularioGasto } from "../FormularioGasto";
 import { borrarGasto } from "../acciones";
 
 export default async function EditarGasto({ params }: { params: Promise<{ id: string }> }) {
-  const id = Number((await params).id);
+  const { id } = await params;
   const supabase = await crearClienteSupabase();
   const { data: gasto } = await supabase.from("gastos").select("*").eq("id", id).maybeSingle();
   if (!gasto) notFound();
