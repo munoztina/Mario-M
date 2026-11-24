@@ -29,7 +29,14 @@ export function BotonNuevo({ href, texto }: { href: string; texto: string }) {
 export function Aviso({ ok }: { ok?: string }) {
   if (!ok) return null;
   return (
-    <p className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800">{ok}</p>
+    <p className="animate-aviso mb-3 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0ca30c] text-black">
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+          <path d="m5 12 5 5 9-10" strokeDasharray="24" className="animate-trazo" />
+        </svg>
+      </span>
+      {ok}
+    </p>
   );
 }
 
@@ -40,7 +47,7 @@ export function Vacio({ texto }: { texto: string }) {
 export function Tarjeta({ children, href }: { children: ReactNode; href?: string }) {
   const clase = "block rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm";
   return href ? (
-    <Link href={href} className={clase + " active:bg-zinc-50"}>
+    <Link href={href} className={clase + " tocable active:bg-zinc-50"}>
       {children}
     </Link>
   ) : (

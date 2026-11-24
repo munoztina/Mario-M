@@ -19,7 +19,7 @@ export function Seccion({ titulo, enlace, children }: { titulo: string; enlace?:
 }
 
 /** Número grande con su etiqueta. */
-export function Cifra({ etiqueta, valor, detalle, href }: { etiqueta: string; valor: string; detalle?: ReactNode; href?: string }) {
+export function Cifra({ etiqueta, valor, detalle, href }: { etiqueta: string; valor: ReactNode; detalle?: ReactNode; href?: string }) {
   const cuerpo = (
     <>
       <p className="text-sm text-zinc-500">{etiqueta}</p>
@@ -29,7 +29,7 @@ export function Cifra({ etiqueta, valor, detalle, href }: { etiqueta: string; va
   );
   const clase = "block rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm";
   return href ? (
-    <Link href={href} className={clase + " active:bg-zinc-50"}>
+    <Link href={href} className={clase + " tocable active:bg-zinc-50"}>
       {cuerpo}
     </Link>
   ) : (
@@ -49,7 +49,7 @@ export function BarrasHorizontales({ filas }: { filas: { nombre: string; valor: 
             <span className="font-semibold tabular-nums text-zinc-900">{f.texto}</span>
           </div>
           <div className="h-2.5 rounded-full bg-zinc-100">
-            <div className="h-full rounded-full bg-emerald-600" style={{ width: `${(f.valor / max) * 100}%` }} />
+            <div className="animate-crecer-x h-full origin-left rounded-full bg-emerald-600" style={{ width: `${(f.valor / max) * 100}%` }} />
           </div>
         </li>
       ))}
@@ -66,7 +66,7 @@ export function Columnas({ datos }: { datos: { nombre: string; valor: number }[]
         <div key={d.nombre} role="listitem" className="flex h-full flex-1 flex-col items-center justify-end" aria-label={`Talla ${d.nombre}: ${d.valor}`}>
           <span className="mb-1 text-sm font-semibold tabular-nums text-zinc-900">{d.valor}</span>
           <span
-            className="block w-full max-w-10 rounded-t-[4px] bg-emerald-600"
+            className="animate-crecer-y block w-full max-w-10 origin-bottom rounded-t-[4px] bg-emerald-600"
             style={{ height: d.valor > 0 ? `max(${(d.valor / max) * 75}%, 3px)` : 0 }}
           />
           <span className="mt-1 text-xs font-medium text-zinc-600">{d.nombre}</span>
@@ -95,7 +95,7 @@ export function Medidor({ porcentaje }: { porcentaje: number }) {
         aria-valuenow={Math.round(porcentaje)}
         aria-label="Cupo 4x4 usado"
       >
-        <div className="h-full rounded-full" style={{ width: `${Math.min(porcentaje, 100)}%`, background: nivel.color }} />
+        <div className="animate-crecer-x h-full origin-left rounded-full" style={{ width: `${Math.min(porcentaje, 100)}%`, background: nivel.color }} />
       </div>
       <p className="mt-2 flex items-center gap-1.5 text-sm font-medium text-zinc-700">
         <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs text-black" style={{ background: nivel.color }}>

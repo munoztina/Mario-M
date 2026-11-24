@@ -46,6 +46,39 @@
 
   --color-sky-100: #10283a;
   --color-sky-800: #92d2ff;
+
+  /* Animaciones */
+  --animate-entrada: entrada 0.28s ease-out backwards;
+  --animate-aviso: aviso 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  --animate-crecer-y: crecer-y 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-crecer-x: crecer-x 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-trazo: trazo 0.45s 0.15s ease-out both;
+  --animate-vaciar: vaciar 5s linear both;
+
+  @keyframes entrada {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes aviso {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes crecer-y {
+    from { transform: scaleY(0); }
+    to { transform: none; }
+  }
+  @keyframes crecer-x {
+    from { transform: scaleX(0); }
+    to { transform: none; }
+  }
+  @keyframes trazo {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes vaciar {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
 }
 
 :root {
@@ -68,4 +101,21 @@ input, select, textarea {
 
 ::placeholder {
   color: #737b87;
+}
+
+/* Botones y tarjetas que se "hunden" un poco al tocarlos */
+button, .tocable {
+  transition: transform 0.12s ease, background-color 0.15s ease, opacity 0.15s ease;
+}
+button:active:not(:disabled), .tocable:active {
+  transform: scale(0.97);
+}
+
+/* Si el celular tiene "Reducir movimiento" activado, se apagan las animaciones */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

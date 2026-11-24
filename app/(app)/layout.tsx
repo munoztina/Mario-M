@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { MenuInferior } from "@/components/MenuInferior";
+import { TirarParaActualizar } from "@/components/TirarParaActualizar";
 import { crearClienteSupabase } from "@/lib/supabase/server";
 
 export default async function LayoutApp({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
 
   return (
     <>
+      <TirarParaActualizar />
       <main className="mx-auto max-w-lg px-4 pb-40">{children}</main>
       <MenuInferior />
     </>

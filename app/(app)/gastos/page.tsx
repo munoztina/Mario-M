@@ -1,4 +1,6 @@
 import { Aviso, BotonNuevo, Encabezado, Tarjeta, Vacio } from "@/components/estructura";
+import { AyudaDeslizar, Deslizable, ListaConDeshacer } from "@/components/deslizar";
+import { eliminarGasto } from "./acciones";
 import { crearClienteSupabase } from "@/lib/supabase/server";
 import type { Gasto } from "@/lib/datos";
 import { formatoDinero, formatoFecha, nombreMes } from "@/lib/formato";
@@ -35,6 +37,8 @@ export default async function Gastos({ searchParams }: { searchParams: Promise<{
       {gastos.length === 0 ? (
         <Vacio texto="Aún no tienes gastos. Toca «+ Gasto» para registrar el primero." />
       ) : (
+        <ListaConDeshacer>
+        <AyudaDeslizar />
         <div className="space-y-6">
           {[...meses.entries()].map(([mes, lista]) => (
             <section key={mes}>
@@ -51,8 +55,9 @@ export default async function Gastos({ searchParams }: { searchParams: Promise<{
                 </span>
               </h2>
               <ul className="space-y-2">
-                {lista.map((g) => (
-                  <li key={g.id}>
+                {lista.map((g, n) => (
+                  <li key={g.id} className="animate-entrada" style={{ animationDelay: `${Math.min(n * 40, 400)}ms` }}>
+                    <Deslizable id={g.id} alBorrar={{ texto: `Gasto «${g.concepto}» borrado`, accion: eliminarGasto.bind(null, g.id) }}>
                     <Tarjeta href={`/gastos/${g.id}`}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
@@ -72,12 +77,14 @@ export default async function Gastos({ searchParams }: { searchParams: Promise<{
                         <strong className="shrink-0">{formatoDinero(g.monto)}</strong>
                       </div>
                     </Tarjeta>
+                    </Deslizable>
                   </li>
                 ))}
               </ul>
             </section>
           ))}
         </div>
+        </ListaConDeshacer>
       )}
       <BotonNuevo href="/gastos/nuevo" texto="Gasto" />
     </>

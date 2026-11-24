@@ -36,3 +36,11 @@ export async function borrarGasto(id: string) {
   revalidatePath("/", "layout");
   redirect("/gastos?ok=borrado");
 }
+
+/** Para deslizar: borra sin cambiar de pantalla. */
+export async function eliminarGasto(id: string): Promise<EstadoFormulario> {
+  const supabase = await crearClienteSupabase();
+  const { error } = await supabase.from("gastos").delete().eq("id", id);
+  if (error) return { error: mensajeError(error) };
+  revalidatePath("/", "layout");
+}

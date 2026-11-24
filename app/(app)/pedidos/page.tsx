@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Aviso, BotonNuevo, Encabezado, Tarjeta, Vacio } from "@/components/estructura";
+import { AyudaDeslizar, Deslizable, ListaConDeshacer } from "@/components/deslizar";
+import { cambiarEstadoPedido, eliminarPedido } from "./acciones";
 import { crearClienteSupabase } from "@/lib/supabase/server";
 import { ESTADOS_PEDIDO, type Pedido } from "@/lib/datos";
 import { formatoDinero, formatoFecha } from "@/lib/formato";
@@ -67,9 +69,25 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
       {pedidos.length === 0 ? (
         <Vacio texto={estado ? "No hay pedidos con este estado." : "Aún no tienes pedidos. Toca «+ Pedido» para registrar el primero."} />
       ) : (
+        <ListaConDeshacer>
+        <AyudaDeslizar derecha="marcar entregado" />
         <ul className="space-y-2.5">
-          {pedidos.map((p) => (
-            <li key={p.id}>
+          {pedidos.map((p, n) => (
+            <li key={p.id} className="animate-entrada" style={{ animationDelay: `${Math.min(n * 40, 400)}ms` }}>
+              <Deslizable
+                id={p.id}
+                alBorrar={{ texto: `Pedido de ${p.cliente} borrado`, accion: eliminarPedido.bind(null, p.id) }}
+                alDerecha={
+                  p.estado === "Entregado" || p.estado === "Cancelado"
+                    ? undefined
+                    : {
+                        etiqueta: "Entregado",
+                        texto: `Pedido de ${p.cliente} entregado`,
+                        accion: cambiarEstadoPedido.bind(null, p.id, "Entregado"),
+                        deshacer: cambiarEstadoPedido.bind(null, p.id, p.estado),
+                      }
+                }
+              >
               <Tarjeta href={`/pedidos/${p.id}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -95,9 +113,11 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                   </span>
                 </div>
               </Tarjeta>
+              </Deslizable>
             </li>
           ))}
         </ul>
+        </ListaConDeshacer>
       )}
       <BotonNuevo href="/pedidos/nuevo" texto="Pedido" />
     </>

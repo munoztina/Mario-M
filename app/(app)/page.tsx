@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Encabezado } from "@/components/estructura";
 import { BarrasHorizontales, Cifra, Columnas, Medidor, PasosLote, Seccion } from "@/components/panel";
 import { GraficoVentasMes } from "@/components/graficos";
+import { NumeroAnimado } from "@/components/NumeroAnimado";
 import { cargarPanel } from "@/lib/panel";
 import { STOCK_ALERTA_MENOS_DE } from "@/lib/datos";
 import { formatoDinero, formatoFecha, hoyEcuador } from "@/lib/formato";
@@ -43,25 +44,25 @@ export default async function Panel() {
         <div className="grid grid-cols-2 gap-3">
           <Cifra
             etiqueta="Ventas del mes"
-            valor={formatoDinero(d.esteMes.ventas)}
+            valor={<NumeroAnimado valor={d.esteMes.ventas} tipo="dinero" />}
             detalle={comparacion(d.esteMes.ventas, d.mesAnterior.ventas, nombreMesAnterior) ?? "IVA incluido"}
           />
           <Cifra
             etiqueta="Ganancia del mes"
-            valor={formatoDinero(d.esteMes.ganancia)}
+            valor={<NumeroAnimado valor={d.esteMes.ganancia} tipo="dinero" />}
             detalle={d.esteMes.ventas > 0 ? `Margen ${Math.round((d.esteMes.ganancia / d.detalleGanancia.ventasSinIva) * 100)}% sin IVA` : "Sin IVA y sin gastos operativos"}
           />
-          <Cifra etiqueta="Camisetas vendidas" valor={String(d.esteMes.unidades)} detalle="este mes" />
-          <Cifra etiqueta="En stock" valor={String(d.totalStock)} detalle="camisetas en Quito" href="/inventario" />
+          <Cifra etiqueta="Camisetas vendidas" valor={<NumeroAnimado valor={d.esteMes.unidades} />} detalle="este mes" />
+          <Cifra etiqueta="En stock" valor={<NumeroAnimado valor={d.totalStock} />} detalle="camisetas en Quito" href="/inventario" />
           <Cifra
             etiqueta="Por cobrar"
-            valor={formatoDinero(d.porCobrar)}
+            valor={<NumeroAnimado valor={d.porCobrar} tipo="dinero" />}
             detalle={`${d.clientesPorCobrar} ${d.clientesPorCobrar === 1 ? "pedido" : "pedidos"} con saldo`}
             href="/pedidos"
           />
           <Cifra
             etiqueta="Por entregar"
-            valor={String(d.porEntregar.length)}
+            valor={<NumeroAnimado valor={d.porEntregar.length} />}
             detalle={d.porEntregar.length === 1 ? "pedido pendiente" : "pedidos pendientes"}
             href="/pedidos"
           />
@@ -82,7 +83,7 @@ export default async function Panel() {
 
         <Seccion titulo={`Cupo 4x4 de ${d.anio}`}>
           <div className="mb-2 flex items-baseline justify-between">
-            <p className="text-2xl font-bold tabular-nums">{Math.round(d.cupo.porcentaje)}%</p>
+            <p className="text-2xl font-bold tabular-nums"><NumeroAnimado valor={Math.round(d.cupo.porcentaje)} sufijo="%" /></p>
             <p className="text-sm text-zinc-600 tabular-nums">
               {formatoDinero(d.cupo.usado)} de {formatoDinero(d.cupo.limite)}
             </p>

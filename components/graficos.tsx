@@ -62,8 +62,8 @@ export function GraficoVentasMes({ meses }: { meses: Mes[] }) {
               className="flex h-full flex-1 items-end justify-center rounded-md px-[2px] active:bg-zinc-100"
             >
               <span
-                className={"block w-full max-w-6 rounded-t-[4px] " + (i === sel ? "bg-emerald-700" : "bg-emerald-400")}
-                style={{ height: x.ventas > 0 ? `max(${(x.ventas / max) * 100}%, 3px)` : 0 }}
+                className={"animate-crecer-y block w-full max-w-6 origin-bottom rounded-t-[4px] transition-colors " + (i === sel ? "bg-emerald-700" : "bg-emerald-400")}
+                style={{ height: x.ventas > 0 ? `max(${(x.ventas / max) * 100}%, 3px)` : 0, animationDelay: `${i * 35}ms` }}
               />
             </button>
           ))}

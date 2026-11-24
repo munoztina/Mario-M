@@ -92,3 +92,20 @@ export async function borrarPedido(id: string) {
   revalidatePath("/", "layout");
   redirect("/pedidos?ok=borrado");
 }
+
+/** Para deslizar: borra sin cambiar de pantalla. */
+export async function eliminarPedido(id: string): Promise<EstadoFormulario> {
+  const supabase = await crearClienteSupabase();
+  const { error } = await supabase.from("pedidos").delete().eq("id", id);
+  if (error) return { error: mensajeError(error) };
+  revalidatePath("/", "layout");
+}
+
+/** Para deslizar a la derecha (marcar entregado) y su «Deshacer». */
+export async function cambiarEstadoPedido(id: string, estado: string): Promise<EstadoFormulario> {
+  if (!ESTADOS_PEDIDO.includes(estado as never)) return { error: "Estado no válido." };
+  const supabase = await crearClienteSupabase();
+  const { error } = await supabase.from("pedidos").update({ estado }).eq("id", id);
+  if (error) return { error: mensajeError(error) };
+  revalidatePath("/", "layout");
+}

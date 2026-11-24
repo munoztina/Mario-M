@@ -260,6 +260,11 @@ app/(app)/inventario/      Igual, más botones rápidos − / + en la lista
 app/(app)/modelos/         Editar costo estimado, precio sugerido, precio proveedor y peso
 app/(app)/lotes/           Lista, nuevo, ver/editar + "Recibir en Quito"
 lib/costos.ts              Fórmula de costo por camiseta de un lote (Geomil, envío, descuento)
+components/deslizar.tsx   Deslizar ← borrar / → acción rápida, con aviso «Deshacer» (borra a los 5 s)
+components/TirarParaActualizar.tsx  Tirar hacia abajo para recargar
+components/NumeroAnimado.tsx        Números del panel que suben contando
+components/esqueleto.tsx   Siluetas de carga (cada ruta tiene su loading.tsx)
+app/(app)/template.tsx     Animación de entrada de cada pantalla
 components/campos.tsx      Campos de formulario grandes para celular (Formulario, Opciones, Contador…)
 components/estructura.tsx  Encabezado, botón flotante "+", tarjetas
 lib/datos.ts               Listas fijas (tallas, estados, categorías) y tipos
@@ -291,6 +296,9 @@ supabase/migrations/       SQL de la base de datos (se pega en Supabase en orden
 - **Alerta de stock:** cuando quedan menos de `STOCK_ALERTA_MENOS_DE` (2), en `lib/datos.ts`.
 - Los formularios usan `<Formulario>` (no `<form action>`) para que React 19 no borre
   lo escrito cuando hay un error.
+- **Animaciones:** definidas en `@theme` de `app/globals.css` (`animate-entrada`, `aviso`, `crecer-x/y`,
+  `trazo`, `vaciar`). La de entrada usa `backwards` (no `both`): si deja un `transform` aplicado,
+  los botones flotantes `fixed` se descolocan. Todo se apaga con "Reducir movimiento".
 - Next.js 16: el middleware se llama `proxy.ts`; `params` y `searchParams` son Promesas.
 - Antes de entregar: `npx tsc --noEmit` y `npm run build`.
 

@@ -73,3 +73,11 @@ export async function borrarInventario(id: string) {
   revalidatePath("/", "layout");
   redirect("/inventario?ok=borrado");
 }
+
+/** Para deslizar: borra sin cambiar de pantalla. */
+export async function eliminarInventario(id: string): Promise<EstadoFormulario> {
+  const supabase = await crearClienteSupabase();
+  const { error } = await supabase.from("inventario").delete().eq("id", id);
+  if (error) return { error: mensajeError(error) };
+  revalidatePath("/", "layout");
+}

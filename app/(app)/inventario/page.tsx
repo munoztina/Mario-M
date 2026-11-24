@@ -4,7 +4,8 @@ import { claseInput } from "@/components/campos";
 import { crearClienteSupabase } from "@/lib/supabase/server";
 import { TALLAS, type ItemInventario } from "@/lib/datos";
 import { formatoDinero } from "@/lib/formato";
-import { ajustarCantidad } from "./acciones";
+import { ajustarCantidad, eliminarInventario } from "./acciones";
+import { AyudaDeslizar, Deslizable, ListaConDeshacer } from "@/components/deslizar";
 
 const AVISOS: Record<string, string> = {
   creado: "Camisetas agregadas al inventario.",
@@ -67,14 +68,22 @@ export default async function Inventario({ searchParams }: { searchParams: Promi
       {items.length === 0 ? (
         <Vacio texto={q ? "No hay camisetas con ese nombre." : "No tienes camisetas en stock. Toca «+ Agregar»."} />
       ) : (
+        <ListaConDeshacer>
+        <AyudaDeslizar />
         <div className="space-y-3">
-          {[...grupos.entries()].map(([k, lista]) => (
-            <section key={k} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+          {[...grupos.entries()].map(([k, lista], n) => (
+            <section key={k} className="animate-entrada rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm" style={{ animationDelay: `${Math.min(n * 50, 400)}ms` }}>
               <h2 className="font-semibold">{lista[0].equipo}</h2>
               <p className="mb-2 text-sm text-zinc-500">{lista[0].modelo}</p>
               <ul className="divide-y divide-zinc-100">
                 {lista.map((i) => (
-                  <li key={i.id} className="flex items-center gap-3 py-2">
+                  <li key={i.id}>
+                  <Deslizable
+                    id={i.id}
+                    className="rounded-lg"
+                    alBorrar={{ texto: `${i.equipo} ${i.talla} borrada del inventario`, accion: eliminarInventario.bind(null, i.id) }}
+                  >
+                  <div className="flex items-center gap-3 bg-white py-2">
                     <Link href={`/inventario/${i.id}`} className="flex flex-1 items-center gap-3 py-1">
                       <span className="w-12 rounded-lg bg-zinc-100 py-1 text-center text-sm font-semibold">{i.talla}</span>
                       <span className={"text-sm " + (i.cantidad === 0 ? "text-red-600" : "text-zinc-600")}>
@@ -89,12 +98,15 @@ export default async function Inventario({ searchParams }: { searchParams: Promi
                     <form action={ajustarCantidad.bind(null, i.id, 1)}>
                       <button className={boton} aria-label="Sumar uno">+</button>
                     </form>
+                  </div>
+                  </Deslizable>
                   </li>
                 ))}
               </ul>
             </section>
           ))}
         </div>
+        </ListaConDeshacer>
       )}
       <BotonNuevo href="/inventario/nuevo" texto="Agregar" />
     </>
