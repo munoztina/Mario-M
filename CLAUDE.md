@@ -36,6 +36,8 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
 - Tiene una lista (no muy grande) de **clientes antiguos** para avisarles del relanzamiento.
 - Fotos antiguas: los modelos son de temporadas pasadas (no sirven para vender), pero las fotos
   de **clientes con sus camisetas** sirven como prueba de confianza.
+- **Precios en redes: NO se publican.** Siempre "Precio por DM": obliga a escribir por interno y
+  genera más interacción (le funcionó antes). Ningún arte ni texto de post lleva precios.
 - **A futuro (sin apuro):** rebranding del logo y de los colores. El logo actual se hizo en Canva.
 
 ## Proveedor principal: SoccerPlus (China)
