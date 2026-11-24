@@ -29,7 +29,13 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
 - Las entregas se hacían **todas por un servicio de entrega cercano a su casa**, donde también llegaban las camisetas.
 - Las redes sociales las manejaba **otra persona**. Hoy Mario lo hace todo solo y necesita ayuda con
   redes (artes y textos) hasta conseguir a alguien.
-- Proveedores: ya tiene respuestas de logística de SoccerPlus; falta la de Geomil; GMKits ya está en este archivo.
+- SoccerPlus confirmó (23/11/2026): **no tiene buen envío directo a Ecuador**; la mayoría envía a un
+  casillero en EE. UU. (Mario usa GeoBox de Geomil en Miami) y su logística **incluye los impuestos**
+  hasta allá. Los cargos de Ecuador (arancel $20 + FODINFA $1) los cobra Geomil. Falta la respuesta de Geomil.
+- Entregas hoy: **casi todo por el servicio de entrega**; en mano **solo a gente cercana**.
+- Tiene una lista (no muy grande) de **clientes antiguos** para avisarles del relanzamiento.
+- Fotos antiguas: los modelos son de temporadas pasadas (no sirven para vender), pero las fotos
+  de **clientes con sus camisetas** sirven como prueba de confianza.
 - **A futuro (sin apuro):** rebranding del logo y de los colores. El logo actual se hizo en Canva.
 
 ## Proveedor principal: SoccerPlus (China)
