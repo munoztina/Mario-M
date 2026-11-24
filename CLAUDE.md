@@ -242,7 +242,10 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
    redondeada + IVA + $21; Geomil se reparte por peso; valores reales reemplazan al cálculo).
    "Recibir en Quito" = función `recibir_lote()`: pasa todo al inventario con su costo y asigna
    las preventas elegidas (que toman el costo real). Panel muestra lotes en camino.
-3. Paso 3: panel completo: mes seleccionable, gráfico de ventas y ganancia, stock por modelo y talla.
+3. ✅ Paso 3: panel completo: mes seleccionable (`/?mes=aaaa-mm`, no permite meses futuros),
+   gráfico de ventas y ganancia (barra gris = ventas, blanca por dentro = ganancia; dos tonos de una
+   escala, validados para fondo oscuro), stock por modelo y talla (amarillo si < 2).
+   "En stock", "Por cobrar" y "Por entregar" son siempre de hoy; lo demás, del mes elegido.
 4. Paso 4: recordatorio de declaraciones del SRI y comprobantes.
 5. Después: catálogo público con "Pedir por WhatsApp" e importar la hoja de cálculo.
 
@@ -252,7 +255,7 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
 app/login/                 Inicio de sesión
 app/(app)/page.tsx         Panel (inicio): cifras del mes, gráficos, cupo 4x4, alertas de stock
 lib/panel.ts               Todos los cálculos del panel
-components/graficos.tsx    Gráfico de ventas por mes (tocar una columna muestra el detalle)
+components/graficos.tsx    Gráfico de ventas y ganancia por mes (tocar un mes muestra el detalle)
 components/panel.tsx       Cifras, barras, columnas y medidor del cupo
 app/(app)/pedidos/         Lista, nuevo, editar ([id]) y acciones del servidor
 app/(app)/gastos/          Igual que pedidos

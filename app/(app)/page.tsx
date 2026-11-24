@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Encabezado } from "@/components/estructura";
-import { BarrasHorizontales, Cifra, Columnas, Medidor, PasosLote, Seccion } from "@/components/panel";
-import { GraficoVentasMes } from "@/components/graficos";
+import { BarrasHorizontales, Cifra, Medidor, PasosLote, Seccion } from "@/components/panel";
+import { GraficoVentasGanancia } from "@/components/graficos";
 import { NumeroAnimado } from "@/components/NumeroAnimado";
-import { cargarPanel } from "@/lib/panel";
+import { cargarPanel, moverMes } from "@/lib/panel";
 import { STOCK_ALERTA_MENOS_DE } from "@/lib/datos";
 import { formatoDinero, formatoFecha, hoyEcuador } from "@/lib/formato";
 import { cerrarSesion } from "@/app/login/acciones";
@@ -21,9 +21,11 @@ function diasDesde(fecha: string, hoy: string) {
   return Math.round((Date.parse(hoy) - Date.parse(fecha)) / 86_400_000);
 }
 
-export default async function Panel() {
-  const d = await cargarPanel();
+export default async function Panel({ searchParams }: { searchParams: Promise<{ mes?: string }> }) {
+  const { mes } = await searchParams;
+  const d = await cargarPanel(mes);
   const hoy = hoyEcuador();
+  const esMesActual = d.mesActual === d.mesHoy;
   const nombreMes = MESES[Number(d.mesActual.slice(5)) - 1];
   const nombreMesAnterior = MESES[Number(d.mesAnterior.clave.slice(5)) - 1];
 
@@ -40,7 +42,40 @@ export default async function Panel() {
       {d.error && <p className="mb-3 text-sm text-red-600">Algunos datos no se pudieron cargar: {d.error.message}</p>}
 
       <div className="space-y-3">
-        <p className="px-1 text-sm font-medium capitalize text-zinc-500">{nombreMes} {d.mesActual.slice(0, 4)}</p>
+        {/* Elegir mes */}
+        <nav aria-label="Elegir mes" className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white p-1.5">
+          <Link
+            href={`/?mes=${moverMes(d.mesActual, -1)}`}
+            aria-label="Mes anterior"
+            className="tocable flex h-11 w-11 items-center justify-center rounded-xl text-2xl text-zinc-700 active:bg-zinc-100"
+          >
+            ‹
+          </Link>
+          <div className="text-center">
+            <p className="font-marca text-sm font-bold uppercase tracking-wider">
+              {nombreMes} {d.mesActual.slice(0, 4)}
+            </p>
+            {esMesActual ? (
+              <p className="text-xs text-zinc-500">Este mes</p>
+            ) : (
+              <Link href="/" className="text-xs font-medium text-emerald-700">
+                Volver al mes actual
+              </Link>
+            )}
+          </div>
+          {esMesActual ? (
+            <span aria-hidden className="flex h-11 w-11 items-center justify-center text-2xl text-zinc-300">›</span>
+          ) : (
+            <Link
+              href={`/?mes=${moverMes(d.mesActual, 1)}`}
+              aria-label="Mes siguiente"
+              className="tocable flex h-11 w-11 items-center justify-center rounded-xl text-2xl text-zinc-700 active:bg-zinc-100"
+            >
+              ›
+            </Link>
+          )}
+        </nav>
+
         <div className="grid grid-cols-2 gap-3">
           <Cifra
             etiqueta="Ventas del mes"
@@ -52,18 +87,18 @@ export default async function Panel() {
             valor={<NumeroAnimado valor={d.esteMes.ganancia} tipo="dinero" />}
             detalle={d.esteMes.ventas > 0 ? `Margen ${Math.round((d.esteMes.ganancia / d.detalleGanancia.ventasSinIva) * 100)}% sin IVA` : "Sin IVA y sin gastos operativos"}
           />
-          <Cifra etiqueta="Camisetas vendidas" valor={<NumeroAnimado valor={d.esteMes.unidades} />} detalle="este mes" />
-          <Cifra etiqueta="En stock" valor={<NumeroAnimado valor={d.totalStock} />} detalle="camisetas en Quito" href="/inventario" />
+          <Cifra etiqueta="Camisetas vendidas" valor={<NumeroAnimado valor={d.esteMes.unidades} />} detalle={`en ${nombreMes}`} />
+          <Cifra etiqueta="En stock" valor={<NumeroAnimado valor={d.totalStock} />} detalle="hoy, en Quito" href="/inventario" />
           <Cifra
             etiqueta="Por cobrar"
             valor={<NumeroAnimado valor={d.porCobrar} tipo="dinero" />}
-            detalle={`${d.clientesPorCobrar} ${d.clientesPorCobrar === 1 ? "pedido" : "pedidos"} con saldo`}
+            detalle={`hoy · ${d.clientesPorCobrar} ${d.clientesPorCobrar === 1 ? "pedido" : "pedidos"} con saldo`}
             href="/pedidos"
           />
           <Cifra
             etiqueta="Por entregar"
             valor={<NumeroAnimado valor={d.porEntregar.length} />}
-            detalle={d.porEntregar.length === 1 ? "pedido pendiente" : "pedidos pendientes"}
+            detalle={`hoy · ${d.porEntregar.length === 1 ? "pedido pendiente" : "pedidos pendientes"}`}
             href="/pedidos"
           />
         </div>
@@ -77,8 +112,8 @@ export default async function Panel() {
           </p>
         </details>
 
-        <Seccion titulo="Ventas por mes">
-          <GraficoVentasMes meses={d.meses} />
+        <Seccion titulo="Ventas y ganancia por mes">
+          <GraficoVentasGanancia key={d.mesActual} meses={d.meses} seleccionado={d.mesActual} />
         </Seccion>
 
         <Seccion titulo={`Cupo 4x4 de ${d.anio}`}>
@@ -151,7 +186,7 @@ export default async function Panel() {
           {d.porEntregar.length > 6 && <p className="mt-2 text-sm text-zinc-500">y {d.porEntregar.length - 6} más…</p>}
         </Seccion>
 
-        <Seccion titulo="Modelos más vendidos" enlace={{ href: "/pedidos", texto: "Últimos 12 meses" }}>
+        <Seccion titulo="Modelos más vendidos" enlace={{ href: "/pedidos", texto: esMesActual ? "Últimos 12 meses" : `12 meses hasta ${nombreMes}` }}>
           {d.modelos.length === 0 ? (
             <p className="text-sm text-zinc-500">Todavía no hay ventas.</p>
           ) : (
@@ -165,8 +200,60 @@ export default async function Panel() {
           </Seccion>
         )}
 
-        <Seccion titulo="Stock por talla" enlace={{ href: "/inventario", texto: `${d.totalStock} en total` }}>
-          <Columnas datos={d.porTalla.map((t) => ({ nombre: t.talla, valor: t.unidades }))} />
+        <Seccion titulo="Stock por modelo y talla" enlace={{ href: "/inventario", texto: `${d.totalStock} en total` }}>
+          {d.stockTabla.length === 0 ? (
+            <p className="text-sm text-zinc-500">No tienes camisetas en stock.</p>
+          ) : (
+            <div className="-mx-1 overflow-x-auto">
+              <table className="w-full min-w-[20rem] border-separate border-spacing-1 text-center text-sm tabular-nums">
+                <thead>
+                  <tr className="text-xs text-zinc-500">
+                    <th className="text-left font-medium">Modelo</th>
+                    {d.tallasTabla.map((t) => (
+                      <th key={t} className="w-9 font-medium">
+                        {t}
+                      </th>
+                    ))}
+                    <th className="w-9 font-medium">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {d.stockTabla.map((f) => (
+                    <tr key={f.modelo}>
+                      <th scope="row" className="max-w-[7.5rem] truncate pr-1 text-left text-xs font-medium text-zinc-700">
+                        {f.modelo}
+                      </th>
+                      {f.celdas.map((n, i) => (
+                        <td
+                          key={i}
+                          className={
+                            "h-9 rounded-lg " +
+                            (n === 0 ? "text-zinc-300" : n < STOCK_ALERTA_MENOS_DE ? "bg-amber-100 font-semibold text-amber-800" : "bg-zinc-100 font-semibold text-zinc-900")
+                          }
+                          aria-label={`${f.modelo} talla ${d.tallasTabla[i]}: ${n}${n > 0 && n < STOCK_ALERTA_MENOS_DE ? ", quedan pocas" : ""}`}
+                        >
+                          {n === 0 ? "–" : n}
+                        </td>
+                      ))}
+                      <td className="font-bold text-zinc-900">{f.celdas.reduce((a, b) => a + b, 0)}</td>
+                    </tr>
+                  ))}
+                  <tr className="text-xs text-zinc-500">
+                    <th scope="row" className="pt-1 text-left font-medium">Total</th>
+                    {d.tallasTabla.map((t, i) => (
+                      <td key={t} className="pt-1 font-semibold">
+                        {d.stockTabla.reduce((a, f) => a + f.celdas[i], 0)}
+                      </td>
+                    ))}
+                    <td className="pt-1 font-bold text-zinc-900">{d.totalStock}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p className="mt-1 flex items-center gap-1.5 px-1 text-xs text-zinc-500">
+                <span className="inline-block h-3 w-3 rounded-sm bg-amber-100 ring-1 ring-amber-300" /> menos de {STOCK_ALERTA_MENOS_DE} · – sin stock
+              </p>
+            </div>
+          )}
 
           {d.pocas.length > 0 && (
             <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-3">

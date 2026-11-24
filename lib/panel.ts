@@ -5,7 +5,7 @@ import { hoyEcuador } from "@/lib/formato";
 export type Mes = { clave: string; ventas: number; ganancia: number; unidades: number; operativos: number };
 
 /** "2026-11" movido n meses -> "2026-10" */
-function moverMes(clave: string, n: number) {
+export function moverMes(clave: string, n: number) {
   const [a, m] = clave.split("-").map(Number);
   return new Date(Date.UTC(a, m - 1 + n, 1)).toISOString().slice(0, 7);
 }
@@ -16,19 +16,22 @@ const suma = <T,>(xs: T[], f: (x: T) => number) => xs.reduce((s, x) => s + Numbe
  * Junta todos los números del panel.
  * Ganancia del mes = Σ (precio/1,15 − costo) de pedidos no cancelados − gastos operativos del mes.
  */
-export async function cargarPanel() {
+export async function cargarPanel(mesPedido?: string) {
   const hoy = hoyEcuador();
-  const mesActual = hoy.slice(0, 7);
+  const mesHoy = hoy.slice(0, 7);
+  // Mes elegido (formato aaaa-mm); si no es válido o es futuro, el mes actual.
+  const mesActual = mesPedido && /^\d{4}-(0[1-9]|1[0-2])$/.test(mesPedido) && mesPedido <= mesHoy ? mesPedido : mesHoy;
   const desde12 = moverMes(mesActual, -11) + "-01";
-  const anio = hoy.slice(0, 4);
+  const hasta = moverMes(mesActual, 1) + "-01"; // primer día del mes siguiente
+  const anio = mesActual.slice(0, 4);
 
   const supabase = await crearClienteSupabase();
   const [ventas, pendientes, cobrar, inventario, operativos, comprasAnio, costos, lotes] = await Promise.all([
-    supabase.from("pedidos_detalle").select("*").gte("fecha", desde12).neq("estado", "Cancelado"),
+    supabase.from("pedidos_detalle").select("*").gte("fecha", desde12).lt("fecha", hasta).neq("estado", "Cancelado"),
     supabase.from("pedidos_detalle").select("*").neq("estado", "Cancelado").neq("estado", "Entregado").order("fecha"),
     supabase.from("pedidos").select("saldo").neq("estado", "Cancelado").gt("saldo", 0),
     supabase.from("inventario_detalle").select("*"),
-    supabase.from("gastos").select("fecha, monto").eq("tipo", "Operativo").gte("fecha", desde12),
+    supabase.from("gastos").select("fecha, monto").eq("tipo", "Operativo").gte("fecha", desde12).lt("fecha", hasta),
     supabase.from("gastos").select("monto").eq("categoria", "Compra a proveedor").gte("fecha", `${anio}-01-01`).lt("fecha", `${Number(anio) + 1}-01-01`),
     supabase.from("modelos").select("precio_proveedor"),
     supabase.from("lotes_resumen").select("*").neq("estado", "Recibido").order("fecha_pedido"),
@@ -69,6 +72,14 @@ export async function cargarPanel() {
   const porTalla = TALLAS.map((talla) => ({ talla, unidades: suma(items.filter((i) => i.talla === talla), (i) => i.cantidad) })).filter(
     (t) => t.unidades > 0 || ["S", "M", "L", "XL"].includes(t.talla),
   );
+  const modelosConStock = [...new Map(items.filter((i) => i.cantidad > 0).map((i) => [i.modelo_id, i])).values()]
+    .sort((a, b) => a.modelo_orden - b.modelo_orden)
+    .map((i) => i.modelo);
+  const tallasTabla = TALLAS.filter((t) => ["S", "M", "L", "XL"].includes(t) || items.some((i) => i.talla === t && i.cantidad > 0));
+  const stockTabla = modelosConStock.map((modelo) => ({
+    modelo,
+    celdas: tallasTabla.map((talla) => suma(items.filter((i) => i.modelo === modelo && i.talla === talla), (i) => i.cantidad)),
+  }));
   const pocas = items
     .filter((i) => i.cantidad > 0 && i.cantidad < STOCK_ALERTA_MENOS_DE)
     .sort((a, b) => a.cantidad - b.cantidad || a.equipo.localeCompare(b.equipo));
@@ -81,6 +92,7 @@ export async function cargarPanel() {
 
   return {
     error,
+    mesHoy,
     mesActual,
     anio,
     esteMes,
@@ -97,6 +109,8 @@ export async function cargarPanel() {
     clientesPorCobrar: conSaldo.length,
     porEntregar: (pendientes.data ?? []) as Pedido[],
     porTalla,
+    tallasTabla,
+    stockTabla,
     lotesEnCamino: (lotes.data ?? []) as Lote[],
     pocas,
     agotadas: items.filter((i) => i.cantidad === 0).length,
