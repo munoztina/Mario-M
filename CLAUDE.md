@@ -22,6 +22,16 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
 - Entregas: en mano en Quito y la USFQ, y por Servientrega al resto del país.
 - Cambios: solo de talla, hasta 3 días después de entregar y sin uso. Las camisetas personalizadas con nombre no tienen cambio.
 
+### Historia (contada por Mario, nov 2026)
+
+- El negocio ya funcionó hace ~2 años y **le fue bien**. Ahora es un **relanzamiento**, no un comienzo de cero.
+- Modelo de entonces: el cliente pagaba **la mitad al pedir y el resto al entregar**.
+- Las entregas se hacían **todas por un servicio de entrega cercano a su casa**, donde también llegaban las camisetas.
+- Las redes sociales las manejaba **otra persona**. Hoy Mario lo hace todo solo y necesita ayuda con
+  redes (artes y textos) hasta conseguir a alguien.
+- Proveedores: ya tiene respuestas de logística de SoccerPlus; falta la de Geomil; GMKits ya está en este archivo.
+- **A futuro (sin apuro):** rebranding del logo y de los colores. El logo actual se hizo en Canva.
+
 ## Proveedor principal: SoccerPlus (China)
 
 - Catálogo: https://soccerplus.x.yupoo.com/ · contacto por Telegram · pago por PayPal.
