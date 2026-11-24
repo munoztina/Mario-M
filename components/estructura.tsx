@@ -9,7 +9,7 @@ export function Encabezado({ titulo, volver, accion }: { titulo: string; volver?
           ‹
         </Link>
       )}
-      <h1 className="font-marca flex-1 truncate text-[15px] font-bold uppercase tracking-wider">{titulo}</h1>
+      <h1 className="font-marca flex-1 truncate text-[15px] font-bold">{titulo}</h1>
       {accion}
     </header>
   );

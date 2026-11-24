@@ -9,7 +9,7 @@
  *  - amber / red / sky = avisos (stock, cupo, errores), adaptados al fondo oscuro
  */
 @theme {
-  --font-marca: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+  --font-marca: "Unbounded", ui-sans-serif, system-ui, sans-serif;
 
   --color-white: #1b2129;
 

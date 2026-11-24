@@ -52,7 +52,7 @@ export default async function Panel({ searchParams }: { searchParams: Promise<{ 
             ‹
           </Link>
           <div className="text-center">
-            <p className="font-marca text-sm font-bold uppercase tracking-wider">
+            <p className="font-marca text-sm font-bold">
               {nombreMes} {d.mesActual.slice(0, 4)}
             </p>
             {esMesActual ? (

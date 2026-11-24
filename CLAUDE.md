@@ -44,7 +44,7 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
   Copa América). La **selección de Ecuador** sí la tiene SoccerPlus con buena calidad.
 - **Precios en redes: NO se publican.** Siempre "Precio por DM": obliga a escribir por interno y
   genera más interacción (le funcionó antes). Ningún arte ni texto de post lleva precios.
-- **A futuro (sin apuro):** rebranding del logo y de los colores. El logo actual se hizo en Canva.
+- **Rebranding:** hecho el 24/11/2026 (ver sección Marca).
 
 ## Proveedor principal: SoccerPlus (China)
 
@@ -219,9 +219,14 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
 ## Marca: FutAddicts
 
 - Instagram: @futaddicts · "Camisetas de fútbol Ecuador" · WhatsApp +593 99 993 1261.
-- Estilo: **monocromático oscuro**. Fondo negro azulado del logo `#14191F`, líneas y botones blancos,
-  letra cuadrada **Orbitron** solo en títulos. Logo: camiseta en líneas blancas dentro de un marco
-  cuadrado con "FUTADDICTS" vertical (`public/logo-futaddicts.png`, reconstruido de una captura).
+- **Rebranding (24/11/2026):** logo "Cuello en V": cuello de camiseta (curva blanca) + V en color acento,
+  y el nombre "futaddicts" en minúscula con letra **Unbounded ExtraBold** ("fut" en acento, "addicts" en blanco).
+  Archivos: `public/logo-futaddicts.svg` (horizontal) e íconos `public/icon-*.png` (solo el cuello en V).
+- Paleta principal **Noche**: fondo `#14191F`, blanco `#F4F5F2`, acento gris azulado `#9FB3C8`.
+  Para posts se pueden usar las paletas extra si combinan con la camiseta que se promociona:
+  Tricolor (`#0E2A47` / `#FFFFFF` / `#F6C400`), Cancha (`#0F4D3A` / `#F1EEE4` / `#D9B44A`),
+  Retro (`#EDE4D3` / `#5A1A24` / `#1F2A44`). La app usa solo Noche.
+- Letra de títulos en la app: Unbounded (`--font-marca`).
 - Los colores se definen en un solo lugar: `@theme` de `app/globals.css` (la paleta zinc está
   invertida, `white` = superficie de tarjeta, `emerald` = acción blanca). Verde/amarillo/rojo
   se reservan para avisos (cupo, stock, errores).
