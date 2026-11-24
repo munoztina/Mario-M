@@ -44,7 +44,7 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
   Copa América). La **selección de Ecuador** sí la tiene SoccerPlus con buena calidad.
 - **Precios en redes: NO se publican.** Siempre "Precio por DM": obliga a escribir por interno y
   genera más interacción (le funcionó antes). Ningún arte ni texto de post lleva precios.
-- **Rebranding:** hecho el 24/11/2026 (ver sección Marca).
+- **Rebranding:** hecho el 24/11/2026 (ver sección Marca). Mario revisó: no hay logos parecidos.
 
 ## Proveedor principal: SoccerPlus (China)
 
