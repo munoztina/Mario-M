@@ -39,6 +39,9 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
 - **Sin LigaPro:** los proveedores (SoccerPlus, GMKits) no hacen camisetas de equipos de la LigaPro
   ecuatoriana, o las que hay son de mala calidad. No promocionar LigaPro; el fuerte son clubes
   internacionales, selecciones y retro. La calidad es la ventaja frente a las réplicas de calle.
+- **Lo que más se vende:** **Real Madrid y Barcelona predominan todo el año**. Lo demás va por
+  temporadas/tendencias (antes: retro AC Milan 2008 cuando estuvo de moda, Argentina en época de
+  Copa América). La **selección de Ecuador** sí la tiene SoccerPlus con buena calidad.
 - **Precios en redes: NO se publican.** Siempre "Precio por DM": obliga a escribir por interno y
   genera más interacción (le funcionó antes). Ningún arte ni texto de post lleva precios.
 - **A futuro (sin apuro):** rebranding del logo y de los colores. El logo actual se hizo en Canva.
