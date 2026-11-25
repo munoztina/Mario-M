@@ -275,7 +275,15 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
    gráfico de ventas y ganancia (barra gris = ventas, blanca por dentro = ganancia; dos tonos de una
    escala, validados para fondo oscuro), stock por modelo y talla (amarillo si < 2).
    "En stock", "Por cobrar" y "Por entregar" son siempre de hoy; lo demás, del mes elegido.
-4. Paso 4: recordatorio de declaraciones del SRI y comprobantes.
+4. ✅ Paso 4: **SRI** (migración `20261128000000_sri.sql`, pendiente de pegar por Mario): tablas
+   `declaraciones` (solo las ya presentadas; `tipo` IVA/Renta + `periodo` '2026-S2'/'2026') y
+   `comprobantes`, y espacio privado de Storage `comprobantes` (10 MB, fotos/PDF).
+   Fechas calculadas en `lib/sri.ts`: noveno dígito del RUC = 0 → día 28; IVA semestral (julio y
+   enero), renta en marzo; fin de semana → lunes (feriados no). Se siguen desde julio 2026.
+   Panel: tarjeta "SRI · próxima declaración" (amarillo < 15 días, rojo < 5). Pantalla `/sri`:
+   IVA cobrado por semestre (suma por pedido, redondeado como en cada factura), "Ya declaré" /
+   "Deshacer" y subir comprobantes. Los archivos se suben **desde el navegador**
+   (`lib/supabase/navegador.ts`) porque Vercel no acepta más de 4,5 MB por petición.
 5. Después: catálogo público con "Pedir por WhatsApp" e importar la hoja de cálculo.
 
 ## Estructura del código
@@ -291,6 +299,8 @@ app/(app)/gastos/          Igual que pedidos
 app/(app)/inventario/      Igual, más botones rápidos − / + en la lista
 app/(app)/modelos/         Editar costo estimado, precio sugerido, precio proveedor y peso
 app/(app)/lotes/           Lista, nuevo, ver/editar + "Recibir en Quito"
+app/(app)/sri/             Declaraciones del SRI, "Ya declaré" y comprobantes (se entra desde el panel)
+lib/sri.ts / sri-datos.ts  Fechas de declaración (puras) / carga de datos de la pantalla SRI
 lib/costos.ts              Fórmula de costo por camiseta de un lote (Geomil, envío, descuento)
 components/deslizar.tsx   Deslizar ← borrar / → acción rápida, con aviso «Deshacer» (borra a los 5 s)
 components/TirarParaActualizar.tsx  Tirar hacia abajo para recargar

@@ -6,7 +6,7 @@
  *  - "white"  = superficie de tarjetas y campos (y el texto de los botones claros)
  *  - "zinc"   = escala de grises invertida (900 = texto principal claro)
  *  - "emerald"= color de acción de la marca: blanco
- *  - amber / red / sky = avisos (stock, cupo, errores), adaptados al fondo oscuro
+ *  - amber / red / green / sky = avisos (stock, cupo, SRI, errores), adaptados al fondo oscuro
  */
 @theme {
   --font-marca: "Unbounded", ui-sans-serif, system-ui, sans-serif;
@@ -43,6 +43,10 @@
   --color-red-200: #5e252b;
   --color-red-600: #ff8080;
   --color-red-700: #ff9494;
+
+  --color-green-50: #12241a;
+  --color-green-300: #2c6640;
+  --color-green-700: #86dc98;
 
   --color-sky-100: #10283a;
   --color-sky-800: #92d2ff;

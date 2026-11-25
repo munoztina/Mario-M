@@ -17,6 +17,9 @@ export const CATEGORIAS_GASTO = [
   "Otros",
 ] as const;
 
+/** Tipos de comprobante que se guardan en la pantalla SRI. */
+export const TIPOS_COMPROBANTE = ["Declaración", "Factura de compra", "Factura de venta", "Otro"] as const;
+
 /** Estas categorías son "Mercadería" (ya están dentro del costo de cada camiseta). */
 export const CATEGORIAS_MERCADERIA = ["Compra a proveedor", "Envío a Miami", "Geomil"];
 

@@ -7,6 +7,15 @@ import { cargarPanel, moverMes } from "@/lib/panel";
 import { STOCK_ALERTA_MENOS_DE } from "@/lib/datos";
 import { formatoDinero, formatoFecha, hoyEcuador } from "@/lib/formato";
 import { cerrarSesion } from "@/app/login/acciones";
+import { cargarAvisoSri } from "@/lib/sri-datos";
+import { textoDias } from "@/lib/sri";
+
+const COLOR_SRI = {
+  normal: "border-zinc-200 bg-white",
+  pronto: "border-amber-300 bg-amber-50",
+  urgente: "border-red-200 bg-red-50",
+  lista: "border-green-300 bg-green-50",
+} as const;
 
 const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
@@ -23,7 +32,7 @@ function diasDesde(fecha: string, hoy: string) {
 
 export default async function Panel({ searchParams }: { searchParams: Promise<{ mes?: string }> }) {
   const { mes } = await searchParams;
-  const d = await cargarPanel(mes);
+  const [d, sri] = await Promise.all([cargarPanel(mes), cargarAvisoSri()]);
   const hoy = hoyEcuador();
   const esMesActual = d.mesActual === d.mesHoy;
   const nombreMes = MESES[Number(d.mesActual.slice(5)) - 1];
@@ -75,6 +84,22 @@ export default async function Panel({ searchParams }: { searchParams: Promise<{ 
             </Link>
           )}
         </nav>
+
+        {sri && (
+          <Link
+            href="/sri"
+            className={"tocable flex items-center justify-between gap-3 rounded-2xl border p-4 shadow-sm active:opacity-80 " + COLOR_SRI[sri.urgencia]}
+          >
+            <span className="min-w-0">
+              <span className="block text-sm text-zinc-500">SRI · próxima declaración</span>
+              <span className="block truncate font-semibold text-zinc-900">{sri.nombre}</span>
+              <span className={"block text-sm " + (sri.urgencia === "urgente" ? "text-red-700" : sri.urgencia === "pronto" ? "text-amber-700" : "text-zinc-600")}>
+                {formatoFecha(sri.vence)} · {textoDias(sri.dias)}
+              </span>
+            </span>
+            <span aria-hidden className="text-2xl text-zinc-400">›</span>
+          </Link>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <Cifra
