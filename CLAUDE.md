@@ -31,7 +31,11 @@ Vendo camisetas de fútbol importadas (réplicas en versión fan, jugador y retr
   redes (artes y textos) hasta conseguir a alguien.
 - SoccerPlus confirmó (23/11/2026): **no tiene buen envío directo a Ecuador**; la mayoría envía a un
   casillero en EE. UU. (Mario usa GeoBox de Geomil en Miami) y su logística **incluye los impuestos**
-  hasta allá. Los cargos de Ecuador (arancel $20 + FODINFA $1) los cobra Geomil. Falta la respuesta de Geomil.
+  hasta allá. Los cargos de Ecuador (arancel $20 + FODINFA $1) los cobra Geomil.
+- **Geomil respondió (25/11/2026):** por **4x4 solo entran 4 camisetas por paquete** (iguales o distintas),
+  cada paquete paga flete por libra + $21. La otra opción que ofrecen es una importación "tipo B"
+  (falta saber costos y requisitos). Con 4 por paquete, Geomil cuesta ~$9,55 por camiseta fan
+  (vs ~$5,60 con 12): fan corta queda en ~$23 puesta en Quito. `lib/costos.ts` aún asume 1 paquete por lote.
 - Entregas hoy: **casi todo por el servicio de entrega**; en mano **solo a gente cercana**.
 - Tiene una lista (no muy grande) de **clientes antiguos** para avisarles del relanzamiento.
 - Fotos antiguas: los modelos son de temporadas pasadas (no sirven para vender), pero las fotos
