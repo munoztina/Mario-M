@@ -275,7 +275,7 @@ Al registrar una venta con stock, hay que **descontar 1 del inventario**. El cos
    gráfico de ventas y ganancia (barra gris = ventas, blanca por dentro = ganancia; dos tonos de una
    escala, validados para fondo oscuro), stock por modelo y talla (amarillo si < 2).
    "En stock", "Por cobrar" y "Por entregar" son siempre de hoy; lo demás, del mes elegido.
-4. ✅ Paso 4: **SRI** (migración `20261128000000_sri.sql`, pendiente de pegar por Mario): tablas
+4. ✅ Paso 4: **SRI** (migración `20261128000000_sri.sql`, aplicada por Mario el 25/11/2026): tablas
    `declaraciones` (solo las ya presentadas; `tipo` IVA/Renta + `periodo` '2026-S2'/'2026') y
    `comprobantes`, y espacio privado de Storage `comprobantes` (10 MB, fotos/PDF).
    Fechas calculadas en `lib/sri.ts`: noveno dígito del RUC = 0 → día 28; IVA semestral (julio y
